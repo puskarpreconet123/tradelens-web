@@ -29,8 +29,13 @@ try {
 } catch (Throwable $e) { error_log('Auto-seed error: ' . $e->getMessage()); }
 
 // Path normalization
-$uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
-$path = rtrim($uri, '/') ?: '/';
+$uri = $_SERVER['REQUEST_URI'] ?? '/';
+$path = parse_url($uri, PHP_URL_PATH) ?: '/';
+
+// Remove index.php from path if present (common in some Apache setups)
+$path = str_replace('/index.php', '', $path);
+$path = rtrim($path, '/') ?: '/';
+
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 // Optional: strip /api prefix so both /api/auth and /auth work

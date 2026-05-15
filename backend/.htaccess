@@ -5,6 +5,9 @@
     RewriteRule ^(.*)$ index.php [L,QSA]
 </IfModule>
 
+# Fallback if mod_rewrite is missing
+FallbackResource /index.php
+
 <IfModule mod_headers.c>
     Header set Access-Control-Allow-Origin "*"
     Header set Access-Control-Allow-Methods "GET, POST, OPTIONS, DELETE, PUT"
