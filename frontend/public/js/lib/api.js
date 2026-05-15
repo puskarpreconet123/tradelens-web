@@ -1,7 +1,7 @@
 // /js/lib/api.js — fetch wrapper with auth header
 import { getToken, clearAuth } from './auth.js';
 
-const API_BASE = '/api';
+const API_BASE = 'https://tradelens-php.onrender.com';
 
 async function request(path, opts = {}) {
   const headers = { 'Accept': 'application/json', ...(opts.headers || {}) };
