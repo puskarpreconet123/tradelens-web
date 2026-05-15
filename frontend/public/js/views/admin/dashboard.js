@@ -135,13 +135,14 @@ export async function renderAdminDashboard(root) {
       if (!users.length) { usersBody.appendChild(el('div', { class: 'empty-state' }, 'No users.')); return; }
       const wrap = el('div', { class: 'table-wrap' });
       const table = el('table', { class: 'tl-table' });
-      table.innerHTML = `<thead><tr><th>Joined</th><th>Name</th><th>Email</th><th>Role</th></tr></thead>`;
+      table.innerHTML = `<thead><tr><th>Joined</th><th>Name</th><th>Email</th><th>Contact</th><th>Role</th></tr></thead>`;
       const tbody = el('tbody');
       users.forEach(u => {
         const tr = el('tr');
         tr.appendChild(el('td', {}, fmtDateOnly(u.created_at)));
         tr.appendChild(el('td', {}, u.name));
         tr.appendChild(el('td', { html: `<code>${u.email}</code>` }));
+        tr.appendChild(el('td', {}, u.contact_number || '-'));
         tr.appendChild(el('td', { html: `<span class="pill ${u.role === 'admin' ? 'active' : 'pending'}">${u.role}</span>` }));
         tbody.appendChild(tr);
       });

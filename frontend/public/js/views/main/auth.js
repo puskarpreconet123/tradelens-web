@@ -28,8 +28,7 @@ export async function renderAuth(root, mode = 'login') {
             email: data.email, 
             password: data.password, 
             name: data.name,
-            phone: data.phone,
-            whatsapp_number: data.whatsapp_number
+            contact_number: data.contact_number
           });
       setToken(res.token);
       setUser(res.user);
@@ -49,19 +48,16 @@ export async function renderAuth(root, mode = 'login') {
   });
 
   card.appendChild(el('h1', {}, isLogin ? 'Welcome back' : 'Create your account'));
-  card.appendChild(el('p', { class: 'sub' }, isLogin ? 'Sign in to access your dashboard.' : 'Start backtesting in minutes.'));
+  card.appendChild(el('p', { class: 'sub' }, isLogin ? 'Sign in to access your dashboard.' : 'Enter your details to get started with Flash USDT.'));
   if (!isLogin) {
     card.appendChild(el('div', { class: 'field' },
       el('label', { for: 'name' }, 'Full Name'),
       el('input', { id: 'name', name: 'name', type: 'text', required: true, maxlength: 80, autocomplete: 'name' }),
     ));
     card.appendChild(el('div', { class: 'field' },
-      el('label', { for: 'phone' }, 'Phone Number'),
-      el('input', { id: 'phone', name: 'phone', type: 'tel', placeholder: 'e.g. +1234567890' }),
-    ));
-    card.appendChild(el('div', { class: 'field' },
-      el('label', { for: 'whatsapp_number' }, 'WhatsApp Number'),
-      el('input', { id: 'whatsapp_number', name: 'whatsapp_number', type: 'tel', placeholder: 'e.g. +1234567890' }),
+      el('label', { for: 'contact_number' }, 'WhatsApp or Telegram No'),
+      el('input', { id: 'contact_number', name: 'contact_number', type: 'text', placeholder: 'e.g. +1234567890', required: true }),
+      el('div', { style: { fontSize: '11px', color: '#94a3b8', marginTop: '6px' } }, 'Required for account verification and license activation.'),
     ));
   }
   card.appendChild(el('div', { class: 'field' },

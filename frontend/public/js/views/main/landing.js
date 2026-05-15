@@ -13,7 +13,7 @@ const HERO_STATS = [
 
 const STEPS = [
   { num: '01', title: 'Choose Your Plan',       desc: 'Select from Basic, Premium, or Master tiers based on your flash volume and network needs.',     icon: 'compass' },
-  { num: '02', title: 'Secure Checkout',        desc: 'Confirm your selection \u2014 your request is sent to the admin team for review and secure activation.', icon: 'lock' },
+  { num: '02', title: 'Secure Checkout',        desc: 'Confirm your selection \u2014 our team will contact you via WhatsApp or Telegram to verify your identity and secure activation.', icon: 'lock' },
   { num: '03', title: 'Instant Activation',     desc: 'Once approved by an administrator, you receive your license keys, software download, and dashboard access.',     icon: 'rocket' },
   { num: '04', title: 'Start Flashing',         desc: 'Launch the software, connect your node, and start executing USDT flash transfers across multiple networks.',              icon: 'barChart' },
 ];
@@ -35,7 +35,7 @@ const BAND_STATS = [
 const FAQS = [
   ['What is EduFlash and how does it work?', 'EduFlash is an enterprise-grade software for USDT flash transfers. After your license request is approved, you receive a secure environment to execute transfers across multiple networks with real-time monitoring and advanced encryption.'],
   ['Which networks are supported?', 'We support all major USDT networks including TRC-20, ERC-20, BEP-20, Polygon, and Arbitrum.'],
-  ['How does the activation process work?', 'After selecting a plan, your request is reviewed by our team. Once approved, your license key is issued and your software dashboard is unlocked immediately for use.'],
+  ['How does the activation process work?', 'After selecting a plan, your request is reviewed by our team. We will reach out to you on the provided WhatsApp or Telegram number to finalize your setup and issue your license key immediately.'],
   ['How secure is the software?', 'The software runs in a sandbox-isolated environment with AES-256 encryption. We prioritize security and anonymity for all our enterprise clients.'],
   ['Can I use the software on multiple devices?', 'Licenses are tied to your hardware ID for maximum security. Enterprise plans allow for multi-device deployment in a team environment.'],
   ['Is EduFlash suitable for large-scale operations?', 'Absolutely. Our Master plan is designed for high-volume operations with increased limits and priority network routing.'],

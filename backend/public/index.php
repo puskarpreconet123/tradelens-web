@@ -89,15 +89,14 @@ function handle_register(): void {
     $email = strtolower(trim($b['email'] ?? ''));
     $password = $b['password'] ?? '';
     $name = trim($b['name'] ?? '');
-    $phone = trim($b['phone'] ?? '');
-    $whatsapp = trim($b['whatsapp_number'] ?? '');
-
+    $contact = trim($b['contact_number'] ?? '');
+    
     if (!tl_validate_email($email)) tl_error('Invalid email', 422);
     if (strlen($password) < 6) tl_error('Password must be at least 6 characters', 422);
     if ($name === '' || mb_strlen($name) > 80) tl_error('Name is required (max 80 chars)', 422);
     
-    if ($phone === '' && $whatsapp === '') {
-        tl_error('Please provide at least one contact number (Phone or WhatsApp)', 422);
+    if ($contact === '') {
+        tl_error('Please provide your WhatsApp or Telegram Number', 422);
     }
 
     $db = tl_db();
@@ -109,8 +108,7 @@ function handle_register(): void {
         'email' => $email,
         'password_hash' => tl_hash_password($password),
         'name' => $name,
-        'phone' => $phone,
-        'whatsapp_number' => $whatsapp,
+        'contact_number' => $contact,
         'role' => 'user',
         'created_at' => date('c')
     ];
