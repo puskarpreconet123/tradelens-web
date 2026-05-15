@@ -30,43 +30,48 @@ $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 $path = rtrim($uri, '/') ?: '/';
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
+// Optional: strip /api prefix so both /api/auth and /auth work
+if (strpos($path, '/api') === 0) {
+    $path = substr($path, 4) ?: '/';
+}
+
 // Routing
 try {
     // Health
-    if ($path === '/api' || $path === '/api/') {
+    if ($path === '/' || $path === '/api') {
         tl_json_response(['service' => 'TradeLens PHP API', 'status' => 'ok']);
     }
 
     // ---------- Auth ----------
-    if ($path === '/api/auth/register' && $method === 'POST') return handle_register();
-    if ($path === '/api/auth/login'    && $method === 'POST') return handle_login(false);
-    if ($path === '/api/auth/me'       && $method === 'GET')  return handle_me();
+    if ($path === '/auth/register' && $method === 'POST') return handle_register();
+    if ($path === '/auth/login'    && $method === 'POST') return handle_login(false);
+    if ($path === '/auth/me'       && $method === 'GET')  return handle_me();
 
     // Admin auth
-    if ($path === '/api/admin/login'   && $method === 'POST') return handle_login(true);
+    if ($path === '/admin/login'   && $method === 'POST') return handle_login(true);
 
     // ---------- Plans (public) ----------
-    if ($path === '/api/plans'         && $method === 'GET')  return handle_list_plans();
-    if ($path === '/api/plans/demo'    && $method === 'GET')  return handle_demo_plan();
+    if ($path === '/plans'         && $method === 'GET')  return handle_list_plans();
+    if ($path === '/plans/demo'    && $method === 'GET')  return handle_demo_plan();
 
     // ---------- Package Requests ----------
-    if ($path === '/api/requests'      && $method === 'POST') return handle_create_request();
-    if ($path === '/api/requests'      && $method === 'GET')  return handle_list_my_requests();
+    if ($path === '/requests'      && $method === 'POST') return handle_create_request();
+    if ($path === '/requests'      && $method === 'GET')  return handle_list_my_requests();
 
     // ---------- Licenses / Backtest (user) ----------
-    if ($path === '/api/licenses'        && $method === 'GET') return handle_list_licenses();
-    if ($path === '/api/licenses/active' && $method === 'GET') return handle_active_license();
-    if ($path === '/api/backtest/run'    && $method === 'POST') return handle_run_backtest();
+    if ($path === '/licenses'        && $method === 'GET') return handle_list_licenses();
+    if ($path === '/licenses/active' && $method === 'GET') return handle_active_license();
+    if ($path === '/backtest/run'    && $method === 'POST') return handle_run_backtest();
 
     // ---------- Admin ----------
-    if ($path === '/api/admin/requests' && $method === 'GET')  return handle_admin_list_requests();
-    if ($path === '/api/admin/users'    && $method === 'GET')  return handle_admin_list_users();
-    if ($path === '/api/admin/stats'    && $method === 'GET')  return handle_admin_stats();
+    if ($path === '/admin/requests' && $method === 'GET')  return handle_admin_list_requests();
+    if ($path === '/admin/users'    && $method === 'GET')  return handle_admin_list_users();
+    if ($path === '/admin/stats'    && $method === 'GET')  return handle_admin_stats();
 
-    if (preg_match('#^/api/admin/requests/([0-9a-f-]+)/approve$#', $path, $m) && $method === 'POST') {
+    if (preg_match('#^/admin/requests/([0-9a-f-]+)/approve$#', $path, $m) && $method === 'POST') {
         return handle_admin_approve($m[1]);
     }
-    if (preg_match('#^/api/admin/requests/([0-9a-f-]+)/reject$#', $path, $m) && $method === 'POST') {
+    if (preg_match('#^/admin/requests/([0-9a-f-]+)/reject$#', $path, $m) && $method === 'POST') {
         return handle_admin_reject($m[1]);
     }
 
