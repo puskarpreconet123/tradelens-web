@@ -312,10 +312,11 @@ async function renderPricing() {
       const b = el('button', { class: 'opt-btn' + (idx === 0 ? ' active' : ''), onClick: () => {
         sel = idx;
         optRow.querySelectorAll('.opt-btn').forEach((x, i) => x.classList.toggle('active', i === idx));
-        buyBtn.textContent = `Request ${p.options[idx].period} \u2014 $${p.options[idx].price_usd}`;
+        const opt = p.options[idx];
+        buyBtn.textContent = `Request ${opt.period} \u2014 $${opt.price_usd ?? opt.price ?? 0}`;
       } },
         el('span', { class: 'opt-period' }, o.period),
-        el('span', { class: 'opt-price' }, `$${o.price_usd}`),
+        el('span', { class: 'opt-price' }, `$${o.price_usd ?? o.price ?? '0'}`),
         el('span', { class: 'opt-detail' }, o.detail),
       );
       optRow.appendChild(b);
@@ -325,7 +326,7 @@ async function renderPricing() {
       ...(p.features || []).map(f => el('li', { html: `${icons.check('sm')} <span>${f}</span>` })),
     ));
     const firstOpt = (p.options && p.options[0]) || { period: 'Plan', price_usd: 0 };
-    const buyBtn = el('button', { class: `btn ${p.popular ? 'primary' : 'ghost'} full`, onClick: () => onRequest(p, sel, buyBtn) }, `Request ${firstOpt.period} \u2014 $${firstOpt.price_usd}`);
+    const buyBtn = el('button', { class: `btn ${p.popular ? 'primary' : 'ghost'} full`, onClick: () => onRequest(p, sel, buyBtn) }, `Request ${firstOpt.period} \u2014 $${firstOpt.price_usd ?? firstOpt.price ?? 0}`);
     card.appendChild(buyBtn);
     grid.appendChild(card);
   });
