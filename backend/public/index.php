@@ -22,8 +22,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-// One-time seed on first request
-try { tl_seed(); } catch (Throwable $e) { error_log('Seed error: ' . $e->getMessage()); }
+// Auto-seed if plans are missing
+try {
+    $db = tl_db();
+    if ($db->plans->countDocuments([]) === 0) {
+        tl_seed();
+    }
+} catch (Throwable $e) { error_log('Auto-seed error: ' . $e->getMessage()); }
 
 // Path normalization
 $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';

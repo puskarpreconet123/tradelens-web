@@ -84,3 +84,15 @@ function tl_seed(): void {
         ]);
     }
 }
+
+// CLI runner
+if (php_sapi_name() === 'cli' && basename(__FILE__) === basename($_SERVER['PHP_SELF'] ?? '')) {
+    echo "Seeding EduFlash database...\n";
+    try {
+        tl_seed();
+        echo "Successfully seeded plans, demo plan, and admin user.\n";
+    } catch (Throwable $e) {
+        echo "Seeding failed: " . $e->getMessage() . "\n";
+        exit(1);
+    }
+}

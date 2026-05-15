@@ -1,5 +1,8 @@
 {
     "require": {
         "mongodb/mongodb": "^2.0"
+    },
+    "scripts": {
+        "seed": "php lib/seed.php"
     }
 }
