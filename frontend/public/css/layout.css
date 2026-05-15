@@ -30,6 +30,7 @@
   background: linear-gradient(120deg, #22d3ee, #14b8a6);
   display: grid; place-items: center;
   box-shadow: 0 8px 22px -8px rgba(34, 211, 238, 0.5);
+  color: #000;
 }
 .brand-text { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; color: var(--text-strong); letter-spacing: -0.02em; }
 
