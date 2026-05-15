@@ -6,12 +6,21 @@ require_once __DIR__ . '/../lib/seed.php';
 
 // CORS
 $origin = tl_env('CORS_ORIGIN', '*');
+// Browsers don't allow '*' when Access-Control-Allow-Credentials is true.
+// If it's '*', we mirror the request's origin to satisfy the browser.
+if ($origin === '*' && isset($_SERVER['HTTP_ORIGIN'])) {
+    $origin = $_SERVER['HTTP_ORIGIN'];
+}
+
 header("Access-Control-Allow-Origin: $origin");
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, Accept');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, Accept, X-Requested-With');
 header('Access-Control-Allow-Credentials: true');
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(204); exit; }
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
 
 // One-time seed on first request
 try { tl_seed(); } catch (Throwable $e) { error_log('Seed error: ' . $e->getMessage()); }
