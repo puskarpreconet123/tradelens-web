@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/helpers.php';
 
-function tl_seed(): void {
+function tl_seed(): array {
     $db = tl_db();
 
     $plans = [
