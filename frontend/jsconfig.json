@@ -1,9 +1,12 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    }
+    "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "node",
+    "checkJs": true
   },
-  "include": ["src"]
+  "include": [
+    "public/js/**/*"
+  ]
 }
