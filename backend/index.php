@@ -1,13 +1,8 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/../lib/helpers.php';
-require_once __DIR__ . '/../lib/seed.php';
-
-// CORS
-$origin = tl_env('CORS_ORIGIN', '*');
-// Browsers don't allow '*' when Access-Control-Allow-Credentials is true.
-// If it's '*', we mirror the request's origin to satisfy the browser.
+// CORS - Moved to top to ensure headers are sent even if requirements fail
+$origin = getenv('CORS_ORIGIN') ?: '*';
 if ($origin === '*' && isset($_SERVER['HTTP_ORIGIN'])) {
     $origin = $_SERVER['HTTP_ORIGIN'];
 }
@@ -17,10 +12,13 @@ header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, Accept, X-Requested-With');
 header('Access-Control-Allow-Credentials: true');
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'OPTIONS') {
     http_response_code(204);
     exit;
 }
+
+require_once __DIR__ . '/lib/helpers.php';
+require_once __DIR__ . '/lib/seed.php';
 
 // Auto-seed if plans are missing
 try {

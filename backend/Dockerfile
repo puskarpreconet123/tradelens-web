@@ -12,8 +12,8 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
-# Set the document root to /var/www/html/public
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+# Set the document root to /var/www/html
+ENV APACHE_DOCUMENT_ROOT /var/www/html
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
