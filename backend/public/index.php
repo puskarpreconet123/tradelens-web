@@ -62,9 +62,6 @@ try {
     }
 
     tl_error('Not found: ' . $method . ' ' . $path, 404);
-} catch (PDOException $e) {
-    error_log('DB error: ' . $e->getMessage());
-    tl_error('Database error', 500);
 } catch (Throwable $e) {
     error_log('Server error: ' . $e->getMessage());
     tl_error('Server error: ' . $e->getMessage(), 500);
@@ -83,13 +80,17 @@ function handle_register(): void {
     if ($name === '' || mb_strlen($name) > 80) tl_error('Name is required (max 80 chars)', 422);
 
     $db = tl_db();
-    $stmt = $db->prepare('SELECT id FROM users WHERE email = ?');
-    $stmt->execute([$email]);
-    if ($stmt->fetch()) tl_error('Email already registered', 400);
+    if ($db->users->findOne(['email' => $email])) tl_error('Email already registered', 400);
 
     $id = tl_uuid();
-    $insert = $db->prepare('INSERT INTO users (id, email, password_hash, name, role) VALUES (?,?,?,?,?)');
-    $insert->execute([$id, $email, tl_hash_password($password), $name, 'user']);
+    $db->users->insertOne([
+        'id' => $id,
+        'email' => $email,
+        'password_hash' => tl_hash_password($password),
+        'name' => $name,
+        'role' => 'user',
+        'created_at' => date('c')
+    ]);
 
     $token = tl_issue_token($id, $email, 'user');
     $user = ['id' => $id, 'email' => $email, 'name' => $name, 'role' => 'user', 'created_at' => date('c')];
@@ -102,15 +103,15 @@ function handle_login(bool $adminOnly): void {
     $password = $b['password'] ?? '';
     if ($email === '' || $password === '') tl_error('Email and password are required', 422);
 
-    $stmt = tl_db()->prepare('SELECT id, email, password_hash, name, role, created_at FROM users WHERE email = ?');
-    $stmt->execute([$email]);
-    $u = $stmt->fetch();
+    $u = tl_db()->users->findOne(['email' => $email]);
     if (!$u || !tl_verify_password($password, $u['password_hash'])) tl_error('Invalid email or password', 401);
-    if ($adminOnly && $u['role'] !== 'admin') tl_error('Not an admin account', 403);
+    
+    $user = (array)$u;
+    if ($adminOnly && $user['role'] !== 'admin') tl_error('Not an admin account', 403);
 
-    $token = tl_issue_token($u['id'], $u['email'], $u['role']);
-    unset($u['password_hash']);
-    tl_json_response(['token' => $token, 'user' => $u]);
+    $token = tl_issue_token($user['id'], $user['email'], $user['role']);
+    unset($user['password_hash'], $user['_id']);
+    tl_json_response(['token' => $token, 'user' => $user]);
 }
 
 function handle_me(): void {
@@ -119,25 +120,22 @@ function handle_me(): void {
 }
 
 function handle_list_plans(): void {
-    $rows = tl_db()->query('SELECT id, name, tag, popular, options_json, features_json FROM plans ORDER BY sort_order ASC')->fetchAll();
+    $cursor = tl_db()->plans->find([], ['sort' => ['sort_order' => 1]]);
     $out = [];
-    foreach ($rows as $r) {
-        $out[] = [
-            'id' => $r['id'],
-            'name' => $r['name'],
-            'tag' => $r['tag'],
-            'popular' => (bool)$r['popular'],
-            'options' => json_decode($r['options_json'], true) ?: [],
-            'features' => json_decode($r['features_json'], true) ?: [],
-        ];
+    foreach ($cursor as $r) {
+        $p = (array)$r;
+        unset($p['_id']);
+        $out[] = $p;
     }
     tl_json_response($out);
 }
 
 function handle_demo_plan(): void {
-    $r = tl_db()->query("SELECT data_json FROM demo_plan WHERE id='demo'")->fetch();
+    $r = tl_db()->demo_plan->findOne(['id' => 'demo']);
     if (!$r) tl_error('Demo plan not found', 404);
-    tl_json_response(json_decode($r['data_json'], true) ?: []);
+    $p = (array)$r;
+    unset($p['_id']);
+    tl_json_response($p);
 }
 
 function handle_create_request(): void {
@@ -147,9 +145,9 @@ function handle_create_request(): void {
     $db = tl_db();
 
     if ($isDemo) {
-        $r = $db->query("SELECT data_json FROM demo_plan WHERE id='demo'")->fetch();
+        $r = $db->demo_plan->findOne(['id' => 'demo']);
         if (!$r) tl_error('Demo plan not found', 404);
-        $d = json_decode($r['data_json'], true);
+        $d = (array)$r;
         $plan_id = 'demo';
         $plan_name = $d['name'] ?? 'Demo';
         $period = $d['duration'] ?? '1 Hour Full Access';
@@ -159,51 +157,90 @@ function handle_create_request(): void {
         $plan_id = $b['plan_id'] ?? '';
         $option_index = isset($b['option_index']) ? (int)$b['option_index'] : null;
         if ($plan_id === '' || $option_index === null) tl_error('plan_id and option_index required', 422);
-        $stmt = $db->prepare('SELECT name, options_json FROM plans WHERE id = ?');
-        $stmt->execute([$plan_id]);
-        $p = $stmt->fetch();
+        
+        $p = $db->plans->findOne(['id' => $plan_id]);
         if (!$p) tl_error('Plan not found', 404);
-        $options = json_decode($p['options_json'], true);
+        
+        $plan = (array)$p;
+        $options = $plan['options'];
         if (!isset($options[$option_index])) tl_error('Invalid option_index', 422);
         $opt = $options[$option_index];
-        $plan_name = $p['name'];
+        $plan_name = $plan['name'];
         $period = $opt['period'];
         $price_usd = (float)$opt['price_usd'];
     }
 
     // Prevent duplicate pending
-    $check = $db->prepare("SELECT id FROM package_requests WHERE user_id=? AND plan_id=? AND status='pending' LIMIT 1");
-    $check->execute([$u['id'], $plan_id]);
-    if ($check->fetch()) tl_error('You already have a pending request for this plan. Please wait for admin approval.', 409);
+    $check = $db->package_requests->findOne([
+        'user_id' => $u['id'],
+        'plan_id' => $plan_id,
+        'status' => 'pending'
+    ]);
+    if ($check) tl_error('You already have a pending request for this plan. Please wait for admin approval.', 409);
 
     $id = tl_uuid();
-    $insert = $db->prepare('INSERT INTO package_requests (id, user_id, user_email, user_name, plan_id, plan_name, period, price_usd, option_index, is_demo) VALUES (?,?,?,?,?,?,?,?,?,?)');
-    $insert->execute([$id, $u['id'], $u['email'], $u['name'], $plan_id, $plan_name, $period, $price_usd, $option_index, $isDemo ? 1 : 0]);
+    $db->package_requests->insertOne([
+        'id' => $id,
+        'user_id' => $u['id'],
+        'user_email' => $u['email'],
+        'user_name' => $u['name'],
+        'plan_id' => $plan_id,
+        'plan_name' => $plan_name,
+        'period' => $period,
+        'price_usd' => $price_usd,
+        'option_index' => $option_index,
+        'is_demo' => $isDemo,
+        'status' => 'pending',
+        'created_at' => date('c')
+    ]);
 
-    $row = $db->prepare('SELECT * FROM package_requests WHERE id = ?');
-    $row->execute([$id]);
-    tl_json_response($row->fetch());
+    $res = $db->package_requests->findOne(['id' => $id]);
+    $out = (array)$res;
+    unset($out['_id']);
+    tl_json_response($out);
 }
 
 function handle_list_my_requests(): void {
     $u = tl_require_auth();
-    $stmt = tl_db()->prepare('SELECT * FROM package_requests WHERE user_id = ? ORDER BY created_at DESC');
-    $stmt->execute([$u['id']]);
-    tl_json_response($stmt->fetchAll());
+    $cursor = tl_db()->package_requests->find(['user_id' => $u['id']], ['sort' => ['created_at' => -1]]);
+    $out = [];
+    foreach ($cursor as $r) {
+        $item = (array)$r;
+        unset($item['_id']);
+        $out[] = $item;
+    }
+    tl_json_response($out);
 }
 
 function handle_list_licenses(): void {
     $u = tl_require_auth();
-    $stmt = tl_db()->prepare('SELECT * FROM licenses WHERE user_id = ? ORDER BY issued_at DESC');
-    $stmt->execute([$u['id']]);
-    tl_json_response($stmt->fetchAll());
+    $cursor = tl_db()->licenses->find(['user_id' => $u['id']], ['sort' => ['issued_at' => -1]]);
+    $out = [];
+    foreach ($cursor as $r) {
+        $item = (array)$r;
+        unset($item['_id']);
+        $out[] = $item;
+    }
+    tl_json_response($out);
 }
 
 function handle_active_license(): void {
     $u = tl_require_auth();
-    $stmt = tl_db()->prepare("SELECT * FROM licenses WHERE user_id = ? AND status='active' AND expires_at > NOW() ORDER BY issued_at DESC LIMIT 1");
-    $stmt->execute([$u['id']]);
-    tl_json_response($stmt->fetch() ?: null);
+    $now = date('c');
+    $lic = tl_db()->licenses->findOne([
+        'user_id' => $u['id'],
+        'status' => 'active',
+        'expires_at' => ['$gt' => $now]
+    ], ['sort' => ['issued_at' => -1]]);
+    
+    if (!$lic) {
+        tl_json_response(null);
+        return;
+    }
+    
+    $out = (array)$lic;
+    unset($out['_id']);
+    tl_json_response($out);
 }
 
 function handle_run_backtest(): void {
@@ -214,11 +251,17 @@ function handle_run_backtest(): void {
     $capital = (float)($b['capital'] ?? 100000);
 
     $db = tl_db();
-    $lic = $db->prepare("SELECT * FROM licenses WHERE user_id=? AND status='active' AND expires_at > NOW() ORDER BY issued_at DESC LIMIT 1");
-    $lic->execute([$u['id']]);
-    $license = $lic->fetch();
+    $now = date('c');
+    $license = $db->licenses->findOne([
+        'user_id' => $u['id'],
+        'status' => 'active',
+        'expires_at' => ['$gt' => $now]
+    ], ['sort' => ['issued_at' => -1]]);
+    
     if (!$license) tl_error('No active license. Please request a plan and wait for admin approval.', 403);
-    if ((int)$license['backtests_used'] >= (int)$license['backtests_limit']) tl_error('Backtest limit reached for this license.', 403);
+    
+    $lic = (array)$license;
+    if ((int)$lic['backtests_used'] >= (int)$lic['backtests_limit']) tl_error('Backtest limit reached for this license.', 403);
 
     $sharpe = round(0.9 + (mt_rand() / mt_getrandmax()) * 1.5, 2);
     $max_dd = round(-3.5 - (mt_rand() / mt_getrandmax()) * 11.5, 2);
@@ -238,9 +281,22 @@ function handle_run_backtest(): void {
 
     $run_id = 'bt_' . bin2hex(random_bytes(6));
     $bt_id = tl_uuid();
-    $insert = $db->prepare('INSERT INTO backtests (id, user_id, license_id, strategy, market, sharpe, max_drawdown, trades, net_pnl, duration_ms, equity_curve_json) VALUES (?,?,?,?,?,?,?,?,?,?,?)');
-    $insert->execute([$bt_id, $u['id'], $license['id'], $strategy, $market, $sharpe, $max_dd, $trades, $net_pnl, $duration_ms, json_encode($curve)]);
-    $db->prepare('UPDATE licenses SET backtests_used = backtests_used + 1 WHERE id = ?')->execute([$license['id']]);
+    $db->backtests->insertOne([
+        'id' => $bt_id,
+        'user_id' => $u['id'],
+        'license_id' => $lic['id'],
+        'strategy' => $strategy,
+        'market' => $market,
+        'sharpe' => $sharpe,
+        'max_drawdown' => $max_dd,
+        'trades' => $trades,
+        'net_pnl' => $net_pnl,
+        'duration_ms' => $duration_ms,
+        'equity_curve' => $curve,
+        'created_at' => date('c')
+    ]);
+    
+    $db->licenses->updateOne(['id' => $lic['id']], ['$inc' => ['backtests_used' => 1]]);
 
     tl_json_response([
         'run_id' => $run_id,
@@ -252,7 +308,7 @@ function handle_run_backtest(): void {
         'net_pnl' => $net_pnl,
         'duration_ms' => $duration_ms,
         'equity_curve' => $curve,
-        'license_id' => $license['id'],
+        'license_id' => $lic['id'],
     ]);
 }
 
@@ -261,34 +317,44 @@ function handle_run_backtest(): void {
 function handle_admin_list_requests(): void {
     tl_require_admin();
     $status = $_GET['status'] ?? null;
-    $sql = 'SELECT * FROM package_requests';
-    $params = [];
+    $filter = [];
     if (in_array($status, ['pending','approved','rejected'], true)) {
-        $sql .= ' WHERE status = ?';
-        $params[] = $status;
+        $filter['status'] = $status;
     }
-    $sql .= ' ORDER BY created_at DESC';
-    $stmt = tl_db()->prepare($sql);
-    $stmt->execute($params);
-    tl_json_response($stmt->fetchAll());
+    
+    $cursor = tl_db()->package_requests->find($filter, ['sort' => ['created_at' => -1]]);
+    $out = [];
+    foreach ($cursor as $r) {
+        $item = (array)$r;
+        unset($item['_id']);
+        $out[] = $item;
+    }
+    tl_json_response($out);
 }
 
 function handle_admin_list_users(): void {
     tl_require_admin();
-    $rows = tl_db()->query('SELECT id, email, name, role, created_at FROM users ORDER BY created_at DESC')->fetchAll();
-    tl_json_response($rows);
+    $cursor = tl_db()->users->find([], ['sort' => ['created_at' => -1]]);
+    $out = [];
+    foreach ($cursor as $r) {
+        $item = (array)$r;
+        unset($item['_id'], $item['password_hash']);
+        $out[] = $item;
+    }
+    tl_json_response($out);
 }
 
 function handle_admin_stats(): void {
     tl_require_admin();
     $db = tl_db();
+    $now = date('c');
     $stats = [
-        'users'              => (int)$db->query("SELECT COUNT(*) FROM users WHERE role='user'")->fetchColumn(),
-        'pending_requests'   => (int)$db->query("SELECT COUNT(*) FROM package_requests WHERE status='pending'")->fetchColumn(),
-        'approved_requests'  => (int)$db->query("SELECT COUNT(*) FROM package_requests WHERE status='approved'")->fetchColumn(),
-        'rejected_requests'  => (int)$db->query("SELECT COUNT(*) FROM package_requests WHERE status='rejected'")->fetchColumn(),
-        'active_licenses'    => (int)$db->query("SELECT COUNT(*) FROM licenses WHERE status='active' AND expires_at > NOW()")->fetchColumn(),
-        'total_backtests'    => (int)$db->query('SELECT COUNT(*) FROM backtests')->fetchColumn(),
+        'users'              => $db->users->countDocuments(['role' => 'user']),
+        'pending_requests'   => $db->package_requests->countDocuments(['status' => 'pending']),
+        'approved_requests'  => $db->package_requests->countDocuments(['status' => 'approved']),
+        'rejected_requests'  => $db->package_requests->countDocuments(['status' => 'rejected']),
+        'active_licenses'    => $db->licenses->countDocuments(['status' => 'active', 'expires_at' => ['$gt' => $now]]),
+        'total_backtests'    => $db->backtests->countDocuments([]),
     ];
     tl_json_response($stats);
 }
@@ -297,44 +363,56 @@ function handle_admin_approve(string $requestId): void {
     tl_require_admin();
     $db = tl_db();
 
-    $stmt = $db->prepare('SELECT * FROM package_requests WHERE id = ?');
-    $stmt->execute([$requestId]);
-    $req = $stmt->fetch();
-    if (!$req) tl_error('Request not found', 404);
+    $req_res = $db->package_requests->findOne(['id' => $requestId]);
+    if (!$req_res) tl_error('Request not found', 404);
+    
+    $req = (array)$req_res;
     if ($req['status'] !== 'pending') tl_error('Request is not pending', 409);
 
     // Determine validity & limit
-    if ((int)$req['is_demo'] === 1) {
-        $row = $db->query("SELECT data_json FROM demo_plan WHERE id='demo'")->fetch();
-        $d = json_decode($row['data_json'], true);
+    if ($req['is_demo']) {
+        $demo_res = $db->demo_plan->findOne(['id' => 'demo']);
+        $d = (array)$demo_res;
         $hours = (int)($d['hours'] ?? 1);
-        $expires_at = (new DateTime())->modify("+{$hours} hours")->format('Y-m-d H:i:s');
+        $expires_at = date('c', time() + ($hours * 3600));
         $limit = (int)($d['backtests_limit'] ?? 50);
     } else {
-        $p = $db->prepare('SELECT options_json FROM plans WHERE id = ?');
-        $p->execute([$req['plan_id']]);
-        $plan = $p->fetch();
-        if (!$plan) tl_error('Plan no longer exists', 404);
-        $options = json_decode($plan['options_json'], true);
+        $p = $db->plans->findOne(['id' => $req['plan_id']]);
+        if (!$p) tl_error('Plan no longer exists', 404);
+        
+        $plan = (array)$p;
+        $options = $plan['options'];
         $opt = $options[(int)$req['option_index']] ?? null;
         if (!$opt) tl_error('Option no longer exists', 404);
+        
         $days = (int)$opt['days'];
-        $expires_at = (new DateTime())->modify("+{$days} days")->format('Y-m-d H:i:s');
+        $expires_at = date('c', time() + ($days * 86400));
         $limit = (int)$opt['backtests_limit'];
     }
 
     $lic_id = tl_uuid();
-    $insert = $db->prepare('INSERT INTO licenses (id, user_id, request_id, plan_id, plan_name, period, license_key, api_key, expires_at, backtests_limit) VALUES (?,?,?,?,?,?,?,?,?,?)');
-    $insert->execute([
-        $lic_id, $req['user_id'], $req['id'], $req['plan_id'], $req['plan_name'], $req['period'],
-        tl_license_key(), tl_api_key(), $expires_at, $limit,
+    $db->licenses->insertOne([
+        'id' => $lic_id,
+        'user_id' => $req['user_id'],
+        'request_id' => $req['id'],
+        'plan_id' => $req['plan_id'],
+        'plan_name' => $req['plan_name'],
+        'period' => $req['period'],
+        'license_key' => tl_license_key(),
+        'api_key' => tl_api_key(),
+        'status' => 'active',
+        'issued_at' => date('c'),
+        'expires_at' => $expires_at,
+        'backtests_used' => 0,
+        'backtests_limit' => $limit,
     ]);
 
-    $db->prepare("UPDATE package_requests SET status='approved', decided_at=NOW() WHERE id=?")->execute([$req['id']]);
+    $db->package_requests->updateOne(['id' => $req['id']], ['$set' => ['status' => 'approved', 'decided_at' => date('c')]]);
 
-    $lic = $db->prepare('SELECT * FROM licenses WHERE id = ?');
-    $lic->execute([$lic_id]);
-    tl_json_response(['success' => true, 'license' => $lic->fetch()]);
+    $lic = $db->licenses->findOne(['id' => $lic_id]);
+    $out = (array)$lic;
+    unset($out['_id']);
+    tl_json_response(['success' => true, 'license' => $out]);
 }
 
 function handle_admin_reject(string $requestId): void {
@@ -343,14 +421,19 @@ function handle_admin_reject(string $requestId): void {
     $reason = trim((string)($b['reason'] ?? ''));
     $db = tl_db();
 
-    $stmt = $db->prepare('SELECT id, status FROM package_requests WHERE id = ?');
-    $stmt->execute([$requestId]);
-    $req = $stmt->fetch();
-    if (!$req) tl_error('Request not found', 404);
+    $req_res = $db->package_requests->findOne(['id' => $requestId]);
+    if (!$req_res) tl_error('Request not found', 404);
+    
+    $req = (array)$req_res;
     if ($req['status'] !== 'pending') tl_error('Request is not pending', 409);
 
-    $upd = $db->prepare("UPDATE package_requests SET status='rejected', reject_reason=?, decided_at=NOW() WHERE id=?");
-    $upd->execute([$reason !== '' ? $reason : null, $req['id']]);
+    $db->package_requests->updateOne(['id' => $req['id']], [
+        '$set' => [
+            'status' => 'rejected',
+            'reject_reason' => $reason !== '' ? $reason : null,
+            'decided_at' => date('c')
+        ]
+    ]);
 
     tl_json_response(['success' => true]);
 }

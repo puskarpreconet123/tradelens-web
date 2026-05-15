@@ -1,4 +1,7 @@
 <?php
+// Load Composer autoloader
+require_once __DIR__ . '/../vendor/autoload.php';
+
 // Load .env into $_ENV and getenv()
 
 function tl_load_env(string $path): void {

@@ -84,10 +84,13 @@ function tl_current_user(): ?array {
     if (!preg_match('/Bearer\s+(.+)/i', $auth, $m)) return null;
     $payload = tl_jwt_decode(trim($m[1]));
     if (!$payload) return null;
-    $stmt = tl_db()->prepare('SELECT id, email, name, role, created_at FROM users WHERE id = ?');
-    $stmt->execute([$payload['sub']]);
-    $user = $stmt->fetch();
-    return $user ?: null;
+    
+    $user = tl_db()->users->findOne(['id' => $payload['sub']]);
+    if (!$user) return null;
+    
+    $u = (array)$user;
+    if (isset($u['_id'])) unset($u['_id']);
+    return $u;
 }
 
 function tl_require_auth(): array {

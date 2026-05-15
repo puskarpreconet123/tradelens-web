@@ -10,18 +10,19 @@ This guide provides step-by-step instructions for deploying the TradeLens applic
 
 ---
 
-## 1. Database Setup (MySQL)
+## 1. Database Setup (MongoDB)
 
-Render does not provide a native MySQL service on the free tier. You should use an external provider.
+Render does not provide a native MongoDB service. You should use **MongoDB Atlas** (which has a great free tier).
 
-1.  Create a MySQL database on your preferred provider.
-2.  Note down the following credentials:
-    -   `DB_HOST`
-    -   `DB_PORT` (usually 3306)
-    -   `DB_NAME`
-    -   `DB_USER`
-    -   `DB_PASS`
-3.  Execute the schema provided in `backend/sql/schema.sql` against your database to set up the tables.
+1.  Create a free cluster on [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
+2.  In the "Network Access" tab, allow access from anywhere (`0.0.0.0/0`) or find Render's IP range.
+3.  Get your **Connection String** (URI). It should look like:
+    `mongodb+srv://<username>:<password>@cluster0.abcde.mongodb.net/?retryWrites=true&w=majority`
+4.  Note down:
+    -   `MONGO_URI`: Your connection string.
+    -   `DB_NAME`: The name of your database (e.g., `tradelens`).
+
+*Note: No manual schema execution is required as the application seeds itself on the first request.*
 
 ---
 
@@ -36,11 +37,11 @@ The backend is built with PHP and will be deployed as a Docker container.
     -   **Environment**: `Docker`
     -   **Root Directory**: `backend` (Important!)
 4.  Add the following **Environment Variables**:
-    -   `DB_HOST`: Your external DB host.
-    -   `DB_PORT`: Your external DB port.
-    -   `DB_NAME`: Your external DB name.
-    -   `DB_USER`: Your external DB user.
-    -   `DB_PASS`: Your external DB password.
+    -   `MONGO_URI`: Your MongoDB connection string.
+    -   `DB_NAME`: Your database name.
+    -   `JWT_SECRET`: A long random string.
+    -   `ADMIN_EMAIL`: Email for the admin account.
+    -   `ADMIN_PASSWORD`: Password for the admin account.
 5.  Click **Create Web Service**.
 6.  Once deployed, note the service URL (e.g., `https://tradelens-api.onrender.com`).
 
