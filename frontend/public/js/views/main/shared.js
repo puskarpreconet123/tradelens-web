@@ -29,6 +29,9 @@ export function renderNavbar() {
 
   const right = el('div', { class: 'nav-right' });
   if (authed) {
+    if (u?.role === 'admin') {
+      right.appendChild(el('a', { class: 'btn ghost sm', href: '/admin/', html: `${icons.crown('sm')} Admin Panel` }));
+    }
     right.appendChild(el('a', { class: 'btn primary sm', href: '#/dashboard', html: `${icons.layout('sm')} Dashboard` }));
   } else {
     right.appendChild(el('a', { class: 'btn ghost sm hide-sm', href: '#/login' }, 'Sign in'));
@@ -44,6 +47,9 @@ export function renderNavbar() {
   NAV_LINKS.forEach(l => mobile.appendChild(el('a', { href: l.href, onClick: () => mobile.classList.add('hidden') }, l.label)));
   const mobActions = el('div', { class: 'actions' });
   if (authed) {
+    if (u?.role === 'admin') {
+      mobActions.appendChild(el('a', { class: 'btn ghost full', href: '/admin/', style: { marginBottom: '8px' }, html: `${icons.crown('sm')} Admin Panel` }));
+    }
     mobActions.appendChild(el('a', { class: 'btn primary full', href: '#/dashboard', html: `${icons.layout('sm')} Dashboard` }));
   } else {
     mobActions.appendChild(el('a', { class: 'btn ghost full', href: '#/login' }, 'Sign in'));

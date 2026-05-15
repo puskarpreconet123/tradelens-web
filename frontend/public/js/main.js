@@ -3,7 +3,7 @@ import { Router } from './lib/router.js';
 import { renderLanding } from './views/main/landing.js';
 import { renderAuth } from './views/main/auth.js';
 import { renderDashboard } from './views/main/dashboard.js';
-import { isAuthed } from './lib/auth.js';
+import { isAuthed, isAdmin } from './lib/auth.js';
 
 const routes = [
   { path: /^\/$/,            view: renderLanding },
@@ -14,9 +14,15 @@ const routes = [
 
 const router = new Router('app', routes, {
   beforeEach: (path) => {
-    if (path === '/dashboard' && !isAuthed()) {
-      window.location.hash = '#/login';
-      return false;
+    if (path === '/dashboard') {
+      if (!isAuthed()) {
+        window.location.hash = '#/login';
+        return false;
+      }
+      if (isAdmin()) {
+        window.location.href = '/admin/';
+        return false;
+      }
     }
     return true;
   },

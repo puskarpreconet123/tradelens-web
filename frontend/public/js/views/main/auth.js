@@ -28,7 +28,13 @@ export async function renderAuth(root, mode = 'login') {
       setToken(res.token);
       setUser(res.user);
       toast({ title: isLogin ? 'Welcome back' : 'Account created', description: 'Redirecting to your dashboard\u2026', kind: 'success' });
-      setTimeout(() => { window.location.hash = '#/dashboard'; }, 600);
+      setTimeout(() => {
+        if (res.user.role === 'admin') {
+          window.location.href = '/admin/';
+        } else {
+          window.location.hash = '#/dashboard';
+        }
+      }, 600);
     } catch (err) {
       toast({ title: 'Authentication failed', description: errorMessage(err), kind: 'error' });
       submitBtn.disabled = false;
