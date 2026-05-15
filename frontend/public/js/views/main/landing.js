@@ -324,7 +324,8 @@ async function renderPricing() {
     card.appendChild(el('ul', { class: 'features-list' },
       ...(p.features || []).map(f => el('li', { html: `${icons.check('sm')} <span>${f}</span>` })),
     ));
-    const buyBtn = el('button', { class: `btn ${p.popular ? 'primary' : 'ghost'} full`, onClick: () => onRequest(p, sel, buyBtn) }, `Request ${p.options[0].period} \u2014 $${p.options[0].price_usd}`);
+    const firstOpt = (p.options && p.options[0]) || { period: 'Plan', price_usd: 0 };
+    const buyBtn = el('button', { class: `btn ${p.popular ? 'primary' : 'ghost'} full`, onClick: () => onRequest(p, sel, buyBtn) }, `Request ${firstOpt.period} \u2014 $${firstOpt.price_usd}`);
     card.appendChild(buyBtn);
     grid.appendChild(card);
   });

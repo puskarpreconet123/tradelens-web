@@ -25,9 +25,10 @@ export async function renderDashboard(root) {
   app.appendChild(header);
 
   const main = el('main', { class: 'dash-main' });
+  const firstName = (user.name || 'User').split(' ')[0];
   main.appendChild(el('div', { class: 'dash-hero' },
     el('span', { class: 'tl-eyebrow' }, 'Workspace'),
-    el('h1', { html: `Welcome, <span class="accent">${escapeHtml(user.name.split(' ')[0])}</span>` }),
+    el('h1', { html: `Welcome, <span class="accent">${escapeHtml(firstName)}</span>` }),
     el('p', {}, 'Manage your licenses, run backtests, and review your package requests.'),
   ));
 
