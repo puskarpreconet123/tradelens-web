@@ -23,8 +23,8 @@ WORKDIR /var/www/html
 # Copy backend files to the container
 COPY . /var/www/html/
 
-# Install composer dependencies
-RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
+# Force fresh install to fix MongoDB compatibility
+RUN composer install --no-dev --optimize-autoloader
 
 # Set correct permissions
 RUN chown -R www-data:www-data /var/www/html/
