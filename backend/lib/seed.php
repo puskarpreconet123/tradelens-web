@@ -80,6 +80,7 @@ function tl_seed(): void {
             'created_at' => date('c')
         ]);
     }
+    return ['status' => 'seeded', 'admin' => $adminEmail];
 }
 
 // CLI runner

@@ -40,6 +40,15 @@ if (strpos($path, '/api') === 0) {
 
 // Routing
 try {
+    if ($path === '/seed-debug') {
+        try {
+            $res = tl_seed();
+            tl_json_response(['status' => 'success', 'seeded' => $res]);
+        } catch (Throwable $e) {
+            tl_json_response(['status' => 'error', 'message' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500);
+        }
+    }
+
     // Health
     if ($path === '/' || $path === '/api') {
         tl_json_response(['service' => 'EduFlash PHP API', 'status' => 'ok']);
