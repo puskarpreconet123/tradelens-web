@@ -37,6 +37,10 @@ export class Router {
   }
 
   async handle() {
+    const h = window.location.hash || '#/';
+    // If hash doesn't start with #/ and isn't empty, it's likely an anchor. Ignore it.
+    if (h !== '#/' && h !== '#' && !h.startsWith('#/')) return;
+
     const path = Router.path();
     const ok = await this.beforeEach(path);
     if (!ok) return;

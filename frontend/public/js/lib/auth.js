@@ -14,5 +14,5 @@ export function clearAuth() {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(USER_KEY);
 }
-export function isAuthed() { return !!getToken(); }
+export function isAuthed() { return !!getToken() && !!getUser(); }
 export function isAdmin() { return getUser()?.role === 'admin'; }
