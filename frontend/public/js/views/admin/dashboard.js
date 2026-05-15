@@ -18,7 +18,7 @@ export async function renderAdminDashboard(root) {
   inner.appendChild(el('div', { class: 'row gap-12' },
     el('a', { class: 'brand', href: '/' },
       el('div', { class: 'logo', html: icons.activity('sm') }),
-      el('span', { class: 'brand-text' }, 'TradeLens'),
+      el('span', { class: 'brand-text' }, 'EduFlash'),
     ),
     el('span', { class: 'admin-badge' }, 'Admin Console'),
   ));
@@ -104,7 +104,7 @@ export async function renderAdminDashboard(root) {
         { v: s.approved_requests, l: 'Approved', c: 'green' },
         { v: s.rejected_requests, l: 'Rejected', c: 'rose' },
         { v: s.active_licenses, l: 'Active Licenses' },
-        { v: s.total_backtests, l: 'Backtests Run' },
+        { v: s.total_backtests, l: 'USDT Flashed' },
       ];
       items.forEach(i => statsRow.appendChild(el('div', { class: 'admin-stat ' + (i.c || '') },
         el('div', { class: 'val' }, Number(i.v).toLocaleString()),

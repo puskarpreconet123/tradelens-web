@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-TradeLens Backend API Test Suite
+EduFlash Backend API Test Suite
 Tests all backend endpoints according to contracts.md and test_result.md
 """
 
@@ -59,7 +59,7 @@ test_user = {
 test_token = None
 
 print("="*80)
-print("TRADELENS BACKEND API TEST SUITE")
+print("EDUFLASH BACKEND API TEST SUITE")
 print("="*80)
 print()
 

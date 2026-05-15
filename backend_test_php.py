@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-TradeLens PHP Backend API Test Suite
+EduFlash PHP Backend API Test Suite
 Tests the new PHP 8.2 + PDO + MariaDB backend with package request/approval workflow
 """
 
@@ -31,12 +31,12 @@ test_results = {
 # Test data
 timestamp = int(time.time())
 test_user = {
-    'email': f'test_{timestamp}@tradelens.test',
+    'email': f'test_{timestamp}@eduflash.test',
     'password': 'Pass1234!',
     'name': 'Test User'
 }
 test_user2 = {
-    'email': f'test2_{timestamp}@tradelens.test',
+    'email': f'test2_{timestamp}@eduflash.test',
     'password': 'Pass1234!',
     'name': 'Test User 2'
 }
@@ -68,7 +68,7 @@ def log_test(name, passed, details=""):
         test_results['failed'] += 1
 
 print("="*80)
-print("TRADELENS PHP BACKEND TEST SUITE")
+print("EDUFLASH PHP BACKEND TEST SUITE")
 print("="*80)
 print()
 
@@ -81,7 +81,7 @@ try:
     response = requests.get(f"{BASE_URL}/")
     if response.status_code == 200:
         data = response.json()
-        if data.get('service') == 'TradeLens PHP API' and data.get('status') == 'ok':
+        if data.get('service') == 'EduFlash PHP API' and data.get('status') == 'ok':
             log_test("1. Health check", True, f"Service: {data.get('service')}, Status: {data.get('status')}")
         else:
             log_test("1. Health check", False, f"Unexpected response: {data}")

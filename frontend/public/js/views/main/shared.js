@@ -11,7 +11,7 @@ const NAV_LINKS = [
 ];
 
 export function statusBar() {
-  return el('div', { class: 'statusbar', html: `<span class="dot"></span> <span>TradeLens \u2014 Live Markets</span>` });
+  return el('div', { class: 'statusbar', html: `<span class="dot"></span> <span>EduFlash \u2014 USDT Flash Network</span>` });
 }
 
 export function renderNavbar() {
@@ -21,7 +21,7 @@ export function renderNavbar() {
   const inner = el('div', { class: 'inner' });
   inner.appendChild(el('a', { class: 'brand', href: '#/' },
     el('div', { class: 'logo', html: icons.activity('sm') }),
-    el('span', { class: 'brand-text' }, 'TradeLens'),
+    el('span', { class: 'brand-text' }, 'EduFlash'),
   ));
   inner.appendChild(el('nav', { class: 'nav-links' },
     ...NAV_LINKS.map(l => el('a', { href: l.href }, l.label)),
@@ -79,7 +79,7 @@ export function attachScrollNav() {
 
 export function renderFooter() {
   const cols = [
-    { title: 'Platform',  items: ['Backtesting','Live Analytics','API Access','Indicators Library','Risk Engine'] },
+    { title: 'Platform',  items: ['Flash Transfers','Network Monitoring','License Keys','Multi-Chain Support','Secure Nodes'] },
     { title: 'Company',   items: ['About','Customers','Careers','Press','Contact'] },
     { title: 'Resources', items: ['Documentation','API Reference','Changelog','Status','Security'] },
   ];
@@ -88,9 +88,9 @@ export function renderFooter() {
   inner.appendChild(el('div', { class: 'footer-brand-col' },
     el('a', { class: 'brand', href: '#/' },
       el('div', { class: 'logo', html: icons.activity('sm') }),
-      el('span', { class: 'brand-text' }, 'TradeLens'),
+      el('span', { class: 'brand-text' }, 'EduFlash'),
     ),
-    el('p', { style: { marginTop: '14px' } }, 'Tick-precise analytics and backtesting for serious traders. Built for speed, accuracy, and trust.'),
+    el('p', { style: { marginTop: '14px' } }, 'Enterprise-grade software for USDT flash transfers. Built for speed, anonymity, and trust.'),
     el('div', { class: 'socials' },
       el('a', { class: 'social-btn', href: '#', html: icons.twitter('sm') }),
       el('a', { class: 'social-btn', href: '#', html: icons.github('sm') }),
@@ -106,7 +106,7 @@ export function renderFooter() {
   });
   f.appendChild(inner);
   f.appendChild(el('div', { class: 'footer-bottom' },
-    el('span', {}, `\u00a9 ${new Date().getFullYear()} TradeLens, Inc. All rights reserved.`),
+    el('span', {}, `\u00a9 ${new Date().getFullYear()} EduFlash, Inc. All rights reserved.`),
     el('div', { class: 'row gap-16 wrap', html: `<a href="#">Terms</a> <a href="#">Privacy</a> <a href="/admin/" style="opacity:0.5;">Admin</a> <span class="mono" style="color:#5eead4;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding-left:14px;border-left:1px solid rgba(94,234,212,0.18);"><span class="dot sm"></span> All systems operational</span>` }),
   ));
   return f;
@@ -117,7 +117,7 @@ export function renderPreloader() {
   pre.appendChild(el('div', { class: 'row gap-12' },
     el('div', { class: 'logo', html: icons.activity() }),
     el('div', {},
-      el('div', { style: { fontFamily: 'Space Grotesk', fontSize: '22px', fontWeight: '600', color: '#f1f5f9' } }, 'TradeLens'),
+      el('div', { style: { fontFamily: 'Space Grotesk', fontSize: '22px', fontWeight: '600', color: '#f1f5f9' } }, 'EduFlash'),
       el('div', { class: 'mono', style: { fontSize: '11px', letterSpacing: '0.18em', color: '#5eead4', textTransform: 'uppercase' } }, 'Loading secure environment\u2026'),
     ),
   ));

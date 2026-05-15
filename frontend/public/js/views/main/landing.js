@@ -7,15 +7,15 @@ import { renderNavbar, renderFooter, renderPreloader, statusBar, attachScrollNav
 
 const HERO_STATS = [
   { val: 'AES-256', lab: 'Encryption', icon: 'shield' },
-  { val: '<10ms',   lab: 'Tick Latency', icon: 'zap' },
-  { val: '$2.4B+',  lab: 'Volume Analyzed', icon: 'barChart' },
+  { val: '<3s',     lab: 'Execution', icon: 'zap' },
+  { val: '900M+',   lab: 'USDT Flashed', icon: 'barChart' },
 ];
 
 const STEPS = [
-  { num: '01', title: 'Choose Your Plan',       desc: 'Select from Starter, Pro, or Enterprise tiers based on your backtesting and data volume needs.',     icon: 'compass' },
-  { num: '02', title: 'Submit Request',          desc: 'Confirm your selection \u2014 your request is sent to the admin team for review (no payment required).', icon: 'lock' },
-  { num: '03', title: 'Admin Approval',          desc: 'Once approved by an administrator, you receive your license keys, API docs, and dashboard access.',     icon: 'rocket' },
-  { num: '04', title: 'Run Your First Backtest', desc: 'Connect a strategy, pick a market, and analyze 10+ years of historical data in seconds.',              icon: 'barChart' },
+  { num: '01', title: 'Choose Your Plan',       desc: 'Select from Basic, Premium, or Master tiers based on your flash volume and network needs.',     icon: 'compass' },
+  { num: '02', title: 'Secure Checkout',        desc: 'Confirm your selection \u2014 your request is sent to the admin team for review and secure activation.', icon: 'lock' },
+  { num: '03', title: 'Instant Activation',     desc: 'Once approved by an administrator, you receive your license keys, software download, and dashboard access.',     icon: 'rocket' },
+  { num: '04', title: 'Start Flashing',         desc: 'Launch the software, connect your node, and start executing USDT flash transfers across multiple networks.',              icon: 'barChart' },
 ];
 
 const SYSREQ = [
@@ -23,23 +23,23 @@ const SYSREQ = [
   ['Rate Limiting', '10,000 req/min'], ['Uptime Guarantee', '99.99% SLA'],
   ['Response Time', '<100ms average'],
 ];
-const MARKETS = ['NASDAQ & NYSE Equities', 'CME Futures', 'FX Spot (28 pairs)', 'Crypto Spot & Perps', 'Options Chain Analytics'];
+const MARKETS = ['TRC-20 (Tron)', 'ERC-20 (Ethereum)', 'BEP-20 (Binance Smart Chain)', 'Polygon (MATIC)', 'Arbitrum One'];
 
 const BAND_STATS = [
-  { val: '12B+',  lab: 'Ticks Processed' },
-  { val: '10K+',  lab: 'Active Traders' },
-  { val: '99.9%', lab: 'Engine Uptime' },
-  { val: '24/7',  lab: 'Live Support' },
+  { val: '900M+',  lab: 'USDT Flashed' },
+  { val: '10K+',   lab: 'Active Users' },
+  { val: '99.9%',  lab: 'Success Rate' },
+  { val: '24/7',   lab: 'Live Support' },
 ];
 
 const FAQS = [
-  ['What is TradeLens and how does it work?', 'TradeLens is a professional-grade analytics and backtesting platform. After your plan request is approved, you receive API access and a full dashboard to build, test, and monitor trading strategies across equities, FX, futures, and crypto markets \u2014 all powered by tick-level historical data.'],
-  ['Which markets and data feeds are supported?', 'We support NASDAQ & NYSE equities, CME futures, FX spot (28 pairs), crypto spot and perpetuals, plus a full options analytics chain.'],
-  ['How does the approval process work?', 'After selecting a plan, your request is sent to our admin team for review. They will approve or reject the request and contact you via the email you registered with. Once approved, your dashboard is unlocked immediately.'],
-  ['How accurate is the historical data?', 'All backtests run on tick-level data sourced from primary venues with full corporate-action adjustment. We retain 10+ years for equities and futures, and full-history for crypto, with strict point-in-time integrity to prevent look-ahead bias.'],
-  ['Can I connect my own strategies via API?', 'Yes. TradeLens provides a RESTful HTTP/2 API and WebSocket streams. You can deploy strategies in Python, JavaScript, or via our visual builder.'],
-  ['Is TradeLens suitable for funds and trading desks?', 'Absolutely. The Enterprise plan includes a dedicated success manager, on-prem deployment option, custom indicator development, and a signed 99.99% uptime SLA.'],
-  ['How do I get technical support?', 'All plans include email support. Pro and Enterprise tiers add priority Slack and Telegram support with guaranteed response times.'],
+  ['What is EduFlash and how does it work?', 'EduFlash is an enterprise-grade software for USDT flash transfers. After your license request is approved, you receive a secure environment to execute transfers across multiple networks with real-time monitoring and advanced encryption.'],
+  ['Which networks are supported?', 'We support all major USDT networks including TRC-20, ERC-20, BEP-20, Polygon, and Arbitrum.'],
+  ['How does the activation process work?', 'After selecting a plan, your request is reviewed by our team. Once approved, your license key is issued and your software dashboard is unlocked immediately for use.'],
+  ['How secure is the software?', 'The software runs in a sandbox-isolated environment with AES-256 encryption. We prioritize security and anonymity for all our enterprise clients.'],
+  ['Can I use the software on multiple devices?', 'Licenses are tied to your hardware ID for maximum security. Enterprise plans allow for multi-device deployment in a team environment.'],
+  ['Is EduFlash suitable for large-scale operations?', 'Absolutely. Our Master plan is designed for high-volume operations with increased limits and priority network routing.'],
+  ['How do I get technical support?', 'All users have access to our technical support team. Master tier users receive priority 24/7 Slack and Telegram support.'],
 ];
 
 export async function renderLanding(root) {
@@ -58,9 +58,9 @@ export async function renderLanding(root) {
   // Hero
   const hero = el('section', { class: 'hero', id: 'top' },
     el('div', { class: 'hero-inner' },
-      el('span', { class: 'tl-eyebrow', html: `<span class="dot sm"></span> Pro Trading Analytics` }),
-      el('h1', { html: `Tick-Precise <br /><span class="accent">Strategy Backtesting</span>` }),
-      el('p', { class: 'sub' }, 'Institutional-grade analytics for retail and pro traders. Backtest, monitor, and deploy strategies on 10+ years of tick-level data with bank-grade security and a 99.99% engine uptime.'),
+      el('span', { class: 'tl-eyebrow', html: `<span class="dot sm"></span> High-Performance USDT Software` }),
+      el('h1', { html: `Instant <br /><span class="accent">USDT Flash Transfers</span>` }),
+      el('p', { class: 'sub' }, 'Enterprise-grade software for USDT flash transfers with AES-256 security, real-time monitoring, and a 99.9% success rate across multiple blockchain networks.'),
       el('div', { class: 'hero-cta' },
         el('a', { class: 'btn primary lg', href: '#pricing', html: `Get Started ${icons.arrowRight('sm')}` }),
         el('a', { class: 'btn ghost lg', href: '#preview' }, 'View Platform'),
@@ -117,9 +117,9 @@ export async function renderLanding(root) {
 function renderPreviewSection() {
   const section = el('section', { class: 'section', id: 'preview' });
   section.appendChild(el('div', { style: { textAlign: 'center', maxWidth: '720px', margin: '0 auto 36px' } },
-    el('span', { class: 'tl-eyebrow' }, 'Platform Preview'),
-    el('h2', { class: 'tl-h2', html: `A <span class="accent">trader-grade</span> dashboard` }),
-    el('p', { class: 'tl-sub', style: { margin: '0 auto' } }, 'Real-time analytics, multi-market backtests, and audit-ready risk monitoring \u2014 unified in one workspace.'),
+    el('span', { class: 'tl-eyebrow' }, 'Software Preview'),
+    el('h2', { class: 'tl-h2', html: `A <span class="accent">pro-grade</span> dashboard` }),
+    el('p', { class: 'tl-sub', style: { margin: '0 auto' } }, 'Real-time monitoring, multi-network flash transfers, and secure environment isolation \u2014 unified in one workspace.'),
   ));
 
   const frame = el('div', { class: 'tl-card preview-frame' });
@@ -130,7 +130,7 @@ function renderPreviewSection() {
       el('span', { style: { background: '#f59e0b' } }),
       el('span', { style: { background: '#22c55e' } }),
     ),
-    el('div', { class: 'url', html: `<span class="dot sm"></span> tradelens.app / workspace / momentum-rsi` }),
+    el('div', { class: 'url', html: `<span class="dot sm"></span> eduflash.app / software / flash-usdt-v4` }),
     el('div', { class: 'tag' }, 'v4.2 \u00b7 Pro'),
   ));
   // Tabs
@@ -158,7 +158,7 @@ function renderPreviewSection() {
   frame.appendChild(body);
 
   // Feat pills
-  const feats = ['Sub-second backtest engine','Real-time tick analytics','Bank-grade data security','RESTful & WebSocket API'];
+  const feats = ['Sub-3s execution engine','Real-time network monitoring','AES-256 secure environment','TRC-20, ERC-20, BEP-20 support'];
   frame.appendChild(el('div', { class: 'feat-pills' },
     ...feats.map(f => el('div', { class: 'pill-soft', html: `<span class="dot sm"></span> ${f}` })),
   ));
@@ -173,52 +173,52 @@ function previewPane(key) {
     wrap.style.gridTemplateColumns = window.innerWidth > 720 ? '1fr 1fr' : '1fr';
     wrap.appendChild(el('div', { html: `
       <div class="row" style="justify-content:space-between;padding-bottom:8px;border-bottom:1px solid rgba(94,234,212,0.08);font-size:13px;color:#cbd5e1;font-weight:500;">
-        <span>Strategy Configuration</span><span class="mono" style="color:#5eead4;font-size:11px;"><span class="dot sm"></span> Live</span>
+        <span>Transfer Configuration</span><span class="mono" style="color:#5eead4;font-size:11px;"><span class="dot sm"></span> Secure Environment</span>
       </div>
-      ${[['Strategy','Momentum / 14D RSI'],['Capital','$500,000.00 USD'],['Market','NASDAQ + Crypto'],['Timeframe','1H Candles']].map(([k,v]) => `<div class="row" style="justify-content:space-between;padding:10px 0;border-bottom:1px dashed rgba(94,234,212,0.08);"><span style="color:#94a3b8;font-size:13px;">${k}</span><span class="mono" style="color:#e6edf3;font-size:13px;">${v}</span></div>`).join('')}
+      ${[['Destination','TX...9a2f (TRC-20)'],['Flash Amount','50,000.00 USDT'],['Network','Tron Mainnet'],['Gas Limit','300,000 Units']].map(([k,v]) => `<div class="row" style="justify-content:space-between;padding:10px 0;border-bottom:1px dashed rgba(94,234,212,0.08);"><span style="color:#94a3b8;font-size:13px;">${k}</span><span class="mono" style="color:#e6edf3;font-size:13px;">${v}</span></div>`).join('')}
       <div style="margin-top:14px;padding:12px;background:rgba(8,12,16,0.6);border:1px solid rgba(94,234,212,0.1);border-radius:10px;">
         <svg viewBox="0 0 400 110" width="100%" height="110" preserveAspectRatio="none">
-          <defs><linearGradient id="g1" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#22d3ee" stop-opacity="0.55"/><stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/></linearGradient></defs>
+          <defs><linearGradient id="g1" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#10b981" stop-opacity="0.55"/><stop offset="100%" stop-color="#10b981" stop-opacity="0"/></linearGradient></defs>
           <path d="M0,90 L25,82 L50,86 L75,70 L100,76 L125,60 L150,66 L175,48 L200,54 L225,38 L250,46 L275,30 L300,36 L325,22 L350,28 L375,14 L400,18 L400,110 L0,110 Z" fill="url(#g1)"/>
-          <path d="M0,90 L25,82 L50,86 L75,70 L100,76 L125,60 L150,66 L175,48 L200,54 L225,38 L250,46 L275,30 L300,36 L325,22 L350,28 L375,14 L400,18" fill="none" stroke="#22d3ee" stroke-width="1.8"/>
+          <path d="M0,90 L25,82 L50,86 L75,70 L100,76 L125,60 L150,66 L175,48 L200,54 L225,38 L250,46 L275,30 L300,36 L325,22 L350,28 L375,14 L400,18" fill="none" stroke="#10b981" stroke-width="1.8"/>
         </svg>
-        <div class="row" style="justify-content:space-between;font-size:11px;color:#94a3b8;margin-top:6px;" class="mono"><span>Equity Curve</span><span style="color:#5eead4;">+18.4% YTD</span></div>
+        <div class="row" style="justify-content:space-between;font-size:11px;color:#94a3b8;margin-top:6px;" class="mono"><span>Network Activity</span><span style="color:#10b981;">Stable</span></div>
       </div>
     `}));
     wrap.appendChild(el('div', { html: `
       <div class="row" style="justify-content:space-between;padding-bottom:8px;border-bottom:1px solid rgba(94,234,212,0.08);font-size:13px;color:#cbd5e1;font-weight:500;">
-        <span>System Status</span><span class="mono" style="color:#5eead4;font-size:11px;"><span class="dot sm"></span> All Systems Operational</span>
+        <span>System Status</span><span class="mono" style="color:#10b981;font-size:11px;"><span class="dot sm"></span> All Systems Operational</span>
       </div>
-      <div class="mono" style="padding:8px 0;font-size:12px;color:#94a3b8;">Latency: <b style="color:#e6edf3;">42ms</b> \u2502 Uptime: <b style="color:#e6edf3;">99.99%</b></div>
+      <div class="mono" style="padding:8px 0;font-size:12px;color:#94a3b8;">Latency: <b style="color:#e6edf3;">87ms</b> \u2502 Success Rate: <b style="color:#e6edf3;">99.9%</b></div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
-        ${[['Win Rate','67.8%'],['Avg. Backtest','1.2s'],['Active Strategies','2,847']].map(([l,v]) => `<div style="padding:12px 8px;background:rgba(8,12,16,0.6);border:1px solid rgba(94,234,212,0.1);border-radius:9px;text-align:center;"><div class="mono" style="font-size:15px;color:#5eead4;font-weight:600;">${v}</div><div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.12em;margin-top:4px;">${l}</div></div>`).join('')}
+        ${[['Active Nodes','128'],['Avg. Execution','2.4s'],['Total Flashed','900M+']].map(([l,v]) => `<div style="padding:12px 8px;background:rgba(8,12,16,0.6);border:1px solid rgba(94,234,212,0.1);border-radius:9px;text-align:center;"><div class="mono" style="font-size:15px;color:#10b981;font-weight:600;">${v}</div><div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.12em;margin-top:4px;">${l}</div></div>`).join('')}
       </div>
     `}));
     return wrap;
   }
   if (key === 'api') {
     return el('div', { style: { display: 'grid', gap: '14px', gridTemplateColumns: window.innerWidth > 720 ? '1.5fr 1fr' : '1fr' } },
-      el('pre', { style: { margin: 0, padding: '16px', background: '#06090d', border: '1px solid rgba(94,234,212,0.12)', borderRadius: '10px', fontSize: '12px', lineHeight: '1.7', color: '#cbd5e1', overflowX: 'auto' }, html: `<code>POST /v1/backtest
-Authorization: Bearer tl_live_***
+      el('pre', { style: { margin: 0, padding: '16px', background: '#06090d', border: '1px solid rgba(16,185,129,0.12)', borderRadius: '10px', fontSize: '12px', lineHeight: '1.7', color: '#cbd5e1', overflowX: 'auto' }, html: `<code>POST /v1/flash
+Authorization: Bearer flash_live_***
 Content-Type: application/json
 
 {
-  "strategy": "momentum_rsi_14",
-  "market": "NASDAQ:AAPL",
-  "resolution": "1m",
-  "capital": 500000
+  "amount": 50000,
+  "destination": "TX...9a2f",
+  "network": "TRC20",
+  "gas_limit": 300000
 }
 
 \u2192 200 OK
 {
-  "run_id": "bt_8a72f31c",
-  "sharpe": 1.87,
-  "max_drawdown": -8.4,
-  "trades": 1284,
-  "net_pnl": 142890.55
+  "tx_id": "8a72f31c...",
+  "status": "success",
+  "execution_time": "2.4s",
+  "network_fee": "12.5 USDT",
+  "confirmations": 12
 }</code>` }),
       el('div', { style: { display: 'flex', flexDirection: 'column', gap: '10px' } },
-        ...[['Endpoint','api.tradelens.app/v1'],['Auth','OAuth 2.0 + Bearer'],['Latency p50','87 ms']].map(([l,v]) =>
+        ...[['Endpoint','api.eduflash.app/v1/flash'],['Auth','Hardware ID + License'],['Latency p50','2.4 s']].map(([l,v]) =>
           el('div', { class: 'tl-card', style: { padding: '12px 14px', background: 'rgba(8,12,16,0.6)' }, html: `<div style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.14em;">${l}</div><div class="mono" style="font-size:13px;color:#e6edf3;margin-top:4px;">${v}</div>` })
         ),
       ),
@@ -294,7 +294,7 @@ async function renderPricing() {
   }
 
   const grid = el('div', { class: 'pricing-grid' });
-  const tierIcons = { Starter: 'rocket', Pro: 'sparkles', Enterprise: 'crown' };
+  const tierIcons = { Basic: 'rocket', Premium: 'sparkles', Master: 'crown' };
 
   plans.forEach((p) => {
     let sel = 0;
@@ -382,7 +382,7 @@ function renderFaq() {
   section.appendChild(el('div', { style: { textAlign: 'center', maxWidth: '720px', margin: '0 auto 36px' } },
     el('span', { class: 'tl-eyebrow' }, 'FAQ'),
     el('h2', { class: 'tl-h2', html: `Common <span class="accent">questions</span>` }),
-    el('p', { class: 'tl-sub', style: { margin: '0 auto' } }, 'Everything you might want to know about TradeLens, data, and onboarding.'),
+    el('p', { class: 'tl-sub', style: { margin: '0 auto' } }, 'Everything you might want to know about EduFlash, data, and onboarding.'),
   ));
   const list = el('div', { class: 'faq-list' });
   let openIdx = 0;

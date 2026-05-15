@@ -15,7 +15,7 @@ export async function renderDashboard(root) {
   const header = el('header', { class: 'dash-header' });
   header.appendChild(el('a', { class: 'brand', href: '#/' },
     el('div', { class: 'logo', html: icons.activity('sm') }),
-    el('span', { class: 'brand-text' }, 'TradeLens'),
+    el('span', { class: 'brand-text' }, 'EduFlash'),
   ));
   header.appendChild(el('div', { class: 'dash-user' },
     el('span', { class: 'name' }, user.name),
@@ -29,7 +29,7 @@ export async function renderDashboard(root) {
   main.appendChild(el('div', { class: 'dash-hero' },
     el('span', { class: 'tl-eyebrow' }, 'Workspace'),
     el('h1', { html: `Welcome, <span class="accent">${escapeHtml(firstName)}</span>` }),
-    el('p', {}, 'Manage your licenses, run backtests, and review your package requests.'),
+    el('p', {}, 'Manage your licenses, execute flash transfers, and review your package requests.'),
   ));
 
   // License card
@@ -40,13 +40,13 @@ export async function renderDashboard(root) {
   // Backtest panel
   const btPanel = el('div', { class: 'tl-card panel' });
   btPanel.appendChild(el('div', { class: 'panel-head' },
-    el('div', { class: 'row gap-8', html: `${icons.trending('sm')} <h2>Run a Backtest</h2>` }),
+    el('div', { class: 'row gap-8', html: `${icons.zap('sm')} <h2>Execute Flash Transfer</h2>` }),
   ));
   const btForm = el('form', { class: 'bt-form' });
-  btForm.appendChild(field('Strategy', 'strategy', 'momentum_rsi_14'));
-  btForm.appendChild(field('Market',   'market',   'NASDAQ:AAPL'));
-  btForm.appendChild(field('Capital (USD)', 'capital', '100000', 'number'));
-  const runBtn = el('button', { type: 'submit', class: 'btn primary', html: `${icons.play('sm')} Run` });
+  btForm.appendChild(field('Destination Address', 'destination', 'TX...9a2f'));
+  btForm.appendChild(field('Network',   'network',   'TRC-20 (Tron)'));
+  btForm.appendChild(field('Flash Amount (USDT)', 'amount', '50000', 'number'));
+  const runBtn = el('button', { type: 'submit', class: 'btn primary', html: `${icons.play('sm')} Execute` });
   btForm.appendChild(runBtn);
   btPanel.appendChild(btForm);
   const btResult = el('div');
@@ -98,21 +98,21 @@ export async function renderDashboard(root) {
   btForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!activeLicense) {
-      toast({ title: 'No active license', description: 'Request and get a plan approved to run backtests.', kind: 'error' });
+      toast({ title: 'No active license', description: 'Request and get a plan approved to execute transfers.', kind: 'error' });
       return;
     }
     const data = Object.fromEntries(new FormData(btForm));
-    runBtn.disabled = true; runBtn.innerHTML = '<span class="spinner"></span> Running\u2026';
+    runBtn.disabled = true; runBtn.innerHTML = '<span class="spinner"></span> Executing\u2026';
     try {
       const result = await api.post('/backtest/run', { strategy: data.strategy, market: data.market, capital: Number(data.capital) || 100000 });
       renderBacktestResult(btResult, result);
       await loadAll();
-      toast({ title: 'Backtest complete', description: `Sharpe ${result.sharpe} \u00b7 ${result.run_id}`, kind: 'success' });
+      toast({ title: 'Transfer complete', description: `Status: Success \u00b7 ${result.run_id}`, kind: 'success' });
     } catch (err) {
-      toast({ title: 'Backtest failed', description: errorMessage(err), kind: 'error' });
+      toast({ title: 'Transfer failed', description: errorMessage(err), kind: 'error' });
     } finally {
       runBtn.disabled = !activeLicense;
-      runBtn.innerHTML = `${icons.play('sm')} Run`;
+      runBtn.innerHTML = `${icons.play('sm')} Execute`;
     }
   });
 }
@@ -146,8 +146,8 @@ function renderLicenseCard(card, lic) {
   const unlimited = limit >= 999999;
   const pct = unlimited ? 12 : Math.min(100, (used / Math.max(limit, 1)) * 100);
   keys.appendChild(el('div', { class: 'key-box' },
-    el('div', { class: 'key-lab' }, 'Backtest Usage'),
-    el('div', { class: 'mono', style: { fontSize: '17px', color: '#f1f5f9', marginTop: '6px' } }, `${used} / ${unlimited ? '\u221e' : limit.toLocaleString()}`),
+    el('div', { class: 'key-lab' }, 'Flash Usage'),
+    el('div', { class: 'mono', style: { fontSize: '17px', color: '#f1f5f9', marginTop: '6px' } }, `${used} / ${unlimited ? '\u221e' : limit.toLocaleString()} USDT`),
     el('div', { class: 'usage-bar-outer' }, el('div', { class: 'usage-bar-inner', style: { width: pct + '%' } })),
   ));
   card.appendChild(keys);
@@ -212,7 +212,7 @@ function renderLicensesTable(body, lics) {
     tr.appendChild(el('td', {}, fmtDateOnly(l.issued_at)));
     tr.appendChild(el('td', {}, `${l.plan_name} \u00b7 ${l.period}`));
     tr.appendChild(el('td', { html: `<code>${l.license_key}</code>` }));
-    tr.appendChild(el('td', {}, `${used} / ${limit >= 999999 ? '\u221e' : limit.toLocaleString()}`));
+    tr.appendChild(el('td', {}, `${used.toLocaleString()} / ${limit >= 999999 ? '\u221e' : limit.toLocaleString()} USDT`));
     tr.appendChild(el('td', {}, fmtDateOnly(l.expires_at)));
     tr.appendChild(el('td', { html: `<span class="pill ${l.status}">${l.status}</span>` }));
     tbody.appendChild(tr);
@@ -226,11 +226,11 @@ function renderBacktestResult(host, result) {
   clear(host);
   const res = el('div', { class: 'bt-result' });
   res.appendChild(el('div', { class: 'bt-metrics' },
-    metric('Sharpe', result.sharpe),
-    metric('Max DD', `${result.max_drawdown}%`),
-    metric('Trades', Number(result.trades).toLocaleString()),
-    metric('Net P&L', `$${Number(result.net_pnl).toLocaleString()}`, true),
-    metric('Duration', `${result.duration_ms}ms`),
+    metric('Amount', `${Number(result.amount).toLocaleString()} USDT`),
+    metric('Fee', `${Number(result.fee).toLocaleString()} USDT`),
+    metric('Network', result.network),
+    metric('Status', 'Success', true),
+    metric('Time', `${result.duration_ms}ms`),
   ));
   res.appendChild(equityChart(result.equity_curve));
   res.appendChild(el('div', { class: 'run-id', html: `Run ID: <code>${result.run_id}</code>` }));
@@ -262,7 +262,7 @@ function equityChart(curve) {
       <polyline points="${pts} ${w},${h} 0,${h}" fill="url(#eq)" stroke="none"/>
       <polyline points="${pts}" fill="none" stroke="#22d3ee" stroke-width="1.8"/>
     </svg>
-    <div class="chart-meta"><span>Equity Curve</span><span style="color:${changeNum >= 0 ? '#5eead4' : '#fb7185'}">${changeNum >= 0 ? '+' : ''}${change}%</span></div>`;
+    <div class="chart-meta"><span>Network Activity</span><span style="color:${changeNum >= 0 ? '#5eead4' : '#fb7185'}">Stable</span></div>`;
   return box;
 }
 

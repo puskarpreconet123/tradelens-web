@@ -12,7 +12,7 @@ export async function renderAuth(root, mode = 'login') {
   const page = el('div', { class: 'auth-page' });
   page.appendChild(el('a', { class: 'brand auth-brand', href: '#/' },
     el('div', { class: 'logo', html: icons.activity('sm') }),
-    el('span', { class: 'brand-text' }, 'TradeLens'),
+    el('span', { class: 'brand-text' }, 'EduFlash'),
   ));
 
   const card = el('form', { class: 'tl-card auth-card' });
@@ -24,7 +24,13 @@ export async function renderAuth(root, mode = 'login') {
     try {
       const res = isLogin
         ? await api.post('/auth/login', { email: data.email, password: data.password })
-        : await api.post('/auth/register', { email: data.email, password: data.password, name: data.name });
+        : await api.post('/auth/register', { 
+            email: data.email, 
+            password: data.password, 
+            name: data.name,
+            phone: data.phone,
+            whatsapp_number: data.whatsapp_number
+          });
       setToken(res.token);
       setUser(res.user);
       toast({ title: isLogin ? 'Welcome back' : 'Account created', description: 'Redirecting to your dashboard\u2026', kind: 'success' });
@@ -49,6 +55,14 @@ export async function renderAuth(root, mode = 'login') {
       el('label', { for: 'name' }, 'Full Name'),
       el('input', { id: 'name', name: 'name', type: 'text', required: true, maxlength: 80, autocomplete: 'name' }),
     ));
+    card.appendChild(el('div', { class: 'field' },
+      el('label', { for: 'phone' }, 'Phone Number'),
+      el('input', { id: 'phone', name: 'phone', type: 'tel', placeholder: 'e.g. +1234567890' }),
+    ));
+    card.appendChild(el('div', { class: 'field' },
+      el('label', { for: 'whatsapp_number' }, 'WhatsApp Number'),
+      el('input', { id: 'whatsapp_number', name: 'whatsapp_number', type: 'tel', placeholder: 'e.g. +1234567890' }),
+    ));
   }
   card.appendChild(el('div', { class: 'field' },
     el('label', { for: 'email' }, 'Email'),
@@ -63,7 +77,7 @@ export async function renderAuth(root, mode = 'login') {
 
   card.appendChild(el('div', { class: 'auth-alt' },
     isLogin
-      ? el('span', { html: `New to TradeLens? <a href="#/register">Create account</a>` })
+      ? el('span', { html: `New to EduFlash? <a href="#/register">Create account</a>` })
       : el('span', { html: `Already have an account? <a href="#/login">Sign in</a>` }),
   ));
 

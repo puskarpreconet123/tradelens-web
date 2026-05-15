@@ -11,7 +11,7 @@ export async function renderAdminLogin(root) {
   const page = el('div', { class: 'auth-page' });
   page.appendChild(el('a', { class: 'brand auth-brand', href: '/' },
     el('div', { class: 'logo', html: icons.activity('sm') }),
-    el('span', { class: 'brand-text' }, 'TradeLens'),
+    el('span', { class: 'brand-text' }, 'EduFlash'),
   ));
 
   const card = el('form', { class: 'tl-card auth-card' });

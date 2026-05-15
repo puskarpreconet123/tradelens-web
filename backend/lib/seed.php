@@ -6,43 +6,43 @@ function tl_seed(): void {
 
     $plans = [
         [
-            'id' => 'starter',
-            'name' => 'Starter',
-            'tag' => 'Perfect for individual traders',
+            'id' => 'basic',
+            'name' => 'Basic',
+            'tag' => 'Ideal for beginners',
             'popular' => false,
             'sort_order' => 1,
             'options' => [
-                ['period'=>'1 day','price_usd'=>49,'detail'=>'50 backtests','days'=>1,'backtests_limit'=>50],
-                ['period'=>'7 days','price_usd'=>99,'detail'=>'500 backtests','days'=>7,'backtests_limit'=>500],
-                ['period'=>'1 month','price_usd'=>299,'detail'=>'3,000 backtests','days'=>30,'backtests_limit'=>3000]
+                ['period'=>'1 day','price_usd'=>49,'detail'=>'2,000 USDT Limit','days'=>1,'limit'=>'2,000 USDT'],
+                ['period'=>'7 days','price_usd'=>149,'detail'=>'15,000 USDT Limit','days'=>7,'limit'=>'15,000 USDT'],
+                ['period'=>'1 month','price_usd'=>299,'detail'=>'200,000 USDT Limit','days'=>30,'limit'=>'200,000 USDT']
             ],
-            'features' => ['Up to 3,000 backtests / month','Standard data resolution (1m)','Email support','Core indicators library','Weekly data updates','30-day report history','Telegram / Slack alerts']
+            'features' => ['Instant Activation','2k-200k Daily Limit','1 Device Access','Standard Email Support','Secure Web Dashboard','Network: TRC-20 Only','Real-time Status']
         ],
         [
-            'id' => 'pro',
-            'name' => 'Pro',
-            'tag' => 'For growing trading desks',
+            'id' => 'premium',
+            'name' => 'Premium',
+            'tag' => 'For advanced flashers',
             'popular' => true,
             'sort_order' => 2,
             'options' => [
-                ['period'=>'1 day','price_usd'=>99,'detail'=>'500 backtests','days'=>1,'backtests_limit'=>500],
-                ['period'=>'7 days','price_usd'=>199,'detail'=>'5,000 backtests','days'=>7,'backtests_limit'=>5000],
-                ['period'=>'1 month','price_usd'=>599,'detail'=>'30,000 backtests','days'=>30,'backtests_limit'=>30000]
+                ['period'=>'1 day','price_usd'=>99,'detail'=>'35,000 USDT Limit','days'=>1,'limit'=>'35,000 USDT'],
+                ['period'=>'7 days','price_usd'=>299,'detail'=>'150,000 USDT Limit','days'=>7,'limit'=>'150,000 USDT'],
+                ['period'=>'1 month','price_usd'=>599,'detail'=>'750,000 USDT Limit','days'=>30,'limit'=>'750,000 USDT']
             ],
-            'features' => ['Up to 30,000 backtests / month','High-res tick data (1s)','Priority chat support','Advanced indicators + ML','90-day report history','Real-time data feeds','Multi-account workspaces']
+            'features' => ['High Speed Execution','35k-750k Daily Limit','2 Devices Access','Priority Chat Support','TRC-20 & ERC-20 Support','90-day History','Custom API Access']
         ],
         [
-            'id' => 'enterprise',
-            'name' => 'Enterprise',
-            'tag' => 'Institutional-grade platform',
+            'id' => 'master',
+            'name' => 'Master',
+            'tag' => 'Enterprise-level operations',
             'popular' => false,
             'sort_order' => 3,
             'options' => [
-                ['period'=>'1 day','price_usd'=>799,'detail'=>'Unlimited','days'=>1,'backtests_limit'=>999999],
-                ['period'=>'7 days','price_usd'=>1599,'detail'=>'Unlimited + WS','days'=>7,'backtests_limit'=>999999],
-                ['period'=>'1 month','price_usd'=>9999,'detail'=>'Unlimited + SLA','days'=>30,'backtests_limit'=>999999]
+                ['period'=>'1 day','price_usd'=>799,'detail'=>'950,000 USDT Limit','days'=>1,'limit'=>'950,000 USDT'],
+                ['period'=>'7 days','price_usd'=>1999,'detail'=>'10M USDT Limit','days'=>7,'limit'=>'10,000,000 USDT'],
+                ['period'=>'1 month','price_usd'=>9999,'detail'=>'500M USDT Limit','days'=>30,'limit'=>'500,000,000 USDT']
             ],
-            'features' => ['Unlimited backtests & strategies','Tick-level historical data','Dedicated success manager','24/7 phone + Slack support','Custom indicator development','370-day report retention','On-prem deployment option']
+            'features' => ['Unlimited Speed','950k-500M Daily Limit','Unlimited Devices','Dedicated Success Manager','All Networks Supported','Custom Network Routing','24/7 Phone Support']
         ],
     ];
 
@@ -58,11 +58,11 @@ function tl_seed(): void {
             'name' => 'Try Demo',
             'price_usd' => 19,
             'duration' => '1 Hour Full Access',
-            'limit' => '50 Backtests Included',
+            'limit' => '1,000 USDT Flash Limit',
             'days' => 0,
             'hours' => 1,
-            'backtests_limit' => 50,
-            'perks' => ['Run up to 50 backtests','Full 1-hour access','Test every Pro feature','Instant activation','Email onboarding'],
+            'backtests_limit' => 1, // keeping field name for compatibility
+            'perks' => ['Test premium features','Full 1-hour access','1,000 USDT Limit','Instant activation','Secure isolation'],
         ];
         $db->demo_plan->insertOne($demo);
     }

@@ -39,7 +39,7 @@ if (strpos($path, '/api') === 0) {
 try {
     // Health
     if ($path === '/' || $path === '/api') {
-        tl_json_response(['service' => 'TradeLens PHP API', 'status' => 'ok']);
+        tl_json_response(['service' => 'EduFlash PHP API', 'status' => 'ok']);
     }
 
     // ---------- Auth ----------
@@ -89,26 +89,36 @@ function handle_register(): void {
     $email = strtolower(trim($b['email'] ?? ''));
     $password = $b['password'] ?? '';
     $name = trim($b['name'] ?? '');
+    $phone = trim($b['phone'] ?? '');
+    $whatsapp = trim($b['whatsapp_number'] ?? '');
+
     if (!tl_validate_email($email)) tl_error('Invalid email', 422);
     if (strlen($password) < 6) tl_error('Password must be at least 6 characters', 422);
     if ($name === '' || mb_strlen($name) > 80) tl_error('Name is required (max 80 chars)', 422);
+    
+    if ($phone === '' && $whatsapp === '') {
+        tl_error('Please provide at least one contact number (Phone or WhatsApp)', 422);
+    }
 
     $db = tl_db();
     if ($db->users->findOne(['email' => $email])) tl_error('Email already registered', 400);
 
     $id = tl_uuid();
-    $db->users->insertOne([
+    $user_data = [
         'id' => $id,
         'email' => $email,
         'password_hash' => tl_hash_password($password),
         'name' => $name,
+        'phone' => $phone,
+        'whatsapp_number' => $whatsapp,
         'role' => 'user',
         'created_at' => date('c')
-    ]);
+    ];
+    $db->users->insertOne($user_data);
 
     $token = tl_issue_token($id, $email, 'user');
-    $user = ['id' => $id, 'email' => $email, 'name' => $name, 'role' => 'user', 'created_at' => date('c')];
-    tl_json_response(['token' => $token, 'user' => $user]);
+    unset($user_data['password_hash'], $user_data['_id']);
+    tl_json_response(['token' => $token, 'user' => $user_data]);
 }
 
 function handle_login(bool $adminOnly): void {
