@@ -279,9 +279,18 @@ async function renderPricing() {
 
   let plans = []; let demo = null;
   try {
-    [plans, demo] = await Promise.all([api.get('/plans'), api.get('/plans/demo')]);
+    const res = await Promise.all([api.get('/plans'), api.get('/plans/demo')]);
+    plans = Array.isArray(res[0]) ? res[0] : [];
+    demo = res[1];
   } catch (e) {
+    console.error('Pricing load error:', e);
     toast({ title: 'Could not load plans', description: e.message, kind: 'error' });
+  }
+
+  if (!plans || !Array.isArray(plans)) {
+    return el('div', { class: 'section', style: { textAlign: 'center', padding: '40px' } }, 
+      el('p', { style: { color: '#94a3b8' } }, 'Pricing plans are currently unavailable. Please try again later.')
+    );
   }
 
   const grid = el('div', { class: 'pricing-grid' });
