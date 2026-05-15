@@ -253,7 +253,8 @@ function equityChart(curve) {
     const y = h - ((v - min) / range) * (h - 16) - 8;
     return `${x},${y}`;
   }).join(' ');
-  const change = ((curve[curve.length - 1] - curve[0]) / curve[0] * 100).toFixed(2);
+  const changeNum = ((curve[curve.length - 1] - curve[0]) / curve[0] * 100);
+  const change = changeNum.toFixed(2);
   const box = el('div', { class: 'chart-box' });
   box.innerHTML = `
     <svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" preserveAspectRatio="none">
@@ -261,7 +262,7 @@ function equityChart(curve) {
       <polyline points="${pts} ${w},${h} 0,${h}" fill="url(#eq)" stroke="none"/>
       <polyline points="${pts}" fill="none" stroke="#22d3ee" stroke-width="1.8"/>
     </svg>
-    <div class="chart-meta"><span>Equity Curve</span><span style="color:${change >= 0 ? '#5eead4' : '#fb7185'}">${change >= 0 ? '+' : ''}${change}%</span></div>`;
+    <div class="chart-meta"><span>Equity Curve</span><span style="color:${changeNum >= 0 ? '#5eead4' : '#fb7185'}">${changeNum >= 0 ? '+' : ''}${change}%</span></div>`;
   return box;
 }
 
