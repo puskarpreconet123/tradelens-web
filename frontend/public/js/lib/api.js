@@ -3,7 +3,7 @@ import { getToken, clearAuth } from './auth.js';
 
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
   ? 'http://localhost:8000' 
-  : 'https://eduflash-php.onrender.com';
+  : 'https://tradelens-php.onrender.com';
 
 async function request(path, opts = {}) {
   const headers = { 'Accept': 'application/json', ...(opts.headers || {}) };
