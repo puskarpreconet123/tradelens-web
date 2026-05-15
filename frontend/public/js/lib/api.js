@@ -18,7 +18,8 @@ async function request(path, opts = {}) {
   if (ct.includes('application/json')) data = await res.json();
   else data = await res.text();
   if (!res.ok) {
-    const err = new Error(data?.detail || res.statusText || 'Request failed');
+    const msg = data?.detail || data?.message || (typeof data === 'string' ? data : null) || res.statusText || `Request failed with status ${res.status}`;
+    const err = new Error(msg);
     err.status = res.status;
     err.data = data;
     if (res.status === 401) clearAuth();

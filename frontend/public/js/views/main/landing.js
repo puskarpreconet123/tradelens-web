@@ -284,7 +284,7 @@ async function renderPricing() {
     demo = res[1];
   } catch (e) {
     console.error('Pricing load error:', e);
-    toast({ title: 'Could not load plans', description: e.message, kind: 'error' });
+    toast({ title: 'Could not load plans', description: `${e.message}${e.status ? ' (Status ' + e.status + ')' : ''}`, kind: 'error' });
   }
 
   if (!plans || !Array.isArray(plans)) {
@@ -322,7 +322,7 @@ async function renderPricing() {
     });
     card.appendChild(optRow);
     card.appendChild(el('ul', { class: 'features-list' },
-      ...p.features.map(f => el('li', { html: `${icons.check('sm')} <span>${f}</span>` })),
+      ...(p.features || []).map(f => el('li', { html: `${icons.check('sm')} <span>${f}</span>` })),
     ));
     const buyBtn = el('button', { class: `btn ${p.popular ? 'primary' : 'ghost'} full`, onClick: () => onRequest(p, sel, buyBtn) }, `Request ${p.options[0].period} \u2014 $${p.options[0].price_usd}`);
     card.appendChild(buyBtn);
@@ -344,7 +344,7 @@ async function renderPricing() {
         el('div', { class: 'demo-lab' }, demo.limit),
       ),
       el('ul', { class: 'features-list', style: { minWidth: '200px' } },
-        ...demo.perks.map(p => el('li', { html: `${icons.check('sm')} <span>${p}</span>` })),
+        ...(demo.perks || []).map(p => el('li', { html: `${icons.check('sm')} <span>${p}</span>` })),
       ),
     ));
     const demoBtn = el('button', { class: 'btn primary', style: { alignSelf: 'center', minWidth: '200px' }, onClick: () => onRequest({ id: 'demo' }, null, demoBtn, true) }, `Request Demo \u2014 $${demo.price_usd}`);
