@@ -13,19 +13,43 @@ export async function renderAdminDashboard(root) {
 
   // Header
   const header = el('header', { class: 'admin-header' });
-  header.appendChild(el('div', { class: 'row gap-12' },
+  const inner = el('div', { class: 'admin-header-inner' });
+  
+  inner.appendChild(el('div', { class: 'row gap-12' },
     el('a', { class: 'brand', href: '/' },
       el('div', { class: 'logo', html: icons.activity('sm') }),
       el('span', { class: 'brand-text' }, 'TradeLens'),
     ),
     el('span', { class: 'admin-badge' }, 'Admin Console'),
   ));
-  header.appendChild(el('div', { class: 'dash-user' },
+
+  const right = el('div', { class: 'admin-nav-right' });
+  right.appendChild(el('div', { class: 'dash-user hide-sm' },
     el('span', { class: 'name' }, user?.name || 'Admin'),
-    el('span', { class: 'email hide-sm' }, user?.email || ''),
-    el('button', { class: 'btn ghost sm', onClick: () => { clearAuth(); window.location.hash = '#/login'; }, html: `${icons.logOut('sm')} Sign out` }),
+    el('span', { class: 'email' }, user?.email || ''),
   ));
+  right.appendChild(el('button', { class: 'btn ghost sm hide-sm', onClick: () => { clearAuth(); window.location.hash = '#/login'; }, html: `${icons.logOut('sm')} Sign out` }));
+  
+  const menuBtn = el('button', { class: 'icon-btn menu-btn show-sm', 'aria-label': 'menu', html: icons.menu('sm') });
+  right.appendChild(menuBtn);
+  inner.appendChild(right);
+  header.appendChild(inner);
+
+  // Mobile menu
+  const mobile = el('div', { class: 'admin-mobile-menu hidden' });
+  const mobContent = el('div', { class: 'mobile-content' });
+  mobContent.appendChild(el('div', { class: 'mob-user-info' },
+    el('div', { class: 'name' }, user?.name || 'Admin'),
+    el('div', { class: 'email' }, user?.email || ''),
+  ));
+  mobContent.appendChild(el('button', { class: 'btn ghost full', style: { marginTop: '12px' }, onClick: () => { clearAuth(); window.location.hash = '#/login'; }, html: `${icons.logOut('sm')} Sign out` }));
+  mobile.appendChild(mobContent);
+  header.appendChild(mobile);
+
   app.appendChild(header);
+
+  menuBtn.addEventListener('click', (e) => { e.stopPropagation(); mobile.classList.toggle('hidden'); });
+  document.addEventListener('click', (e) => { if (!header.contains(e.target)) mobile.classList.add('hidden'); });
 
   const main = el('main', { class: 'admin-main' });
 
