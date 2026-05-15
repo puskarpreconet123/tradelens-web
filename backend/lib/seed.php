@@ -51,21 +51,18 @@ function tl_seed(): void {
     }
 
     // Seed demo plan
-    $exists = $db->demo_plan->findOne(['id' => 'demo']);
-    if (!$exists) {
-        $demo = [
-            'id' => 'demo',
-            'name' => 'Try Demo',
-            'price_usd' => 19,
-            'duration' => '1 Hour Full Access',
-            'limit' => '1,000 USDT Flash Limit',
-            'days' => 0,
-            'hours' => 1,
-            'backtests_limit' => 1, // keeping field name for compatibility
-            'perks' => ['Test premium features','Full 1-hour access','1,000 USDT Limit','Instant activation','Secure isolation'],
-        ];
-        $db->demo_plan->insertOne($demo);
-    }
+    $demo = [
+        'id' => 'demo',
+        'name' => 'Try Demo',
+        'price_usd' => 19,
+        'duration' => '1 Hour Full Access',
+        'limit' => '1,000 USDT Flash Limit',
+        'days' => 0,
+        'hours' => 1,
+        'backtests_limit' => 1, // keeping field name for compatibility
+        'perks' => ['Test premium features','Full 1-hour access','1,000 USDT Limit','Instant activation','Secure isolation'],
+    ];
+    $db->demo_plan->updateOne(['id' => 'demo'], ['$set' => $demo], ['upsert' => true]);
 
     // Seed admin user
     $adminEmail = strtolower(tl_env('ADMIN_EMAIL', 'admin@gmail.com'));
