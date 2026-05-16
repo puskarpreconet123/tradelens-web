@@ -59,7 +59,7 @@ export async function renderLanding(root) {
   const hero = el('section', { class: 'hero', id: 'top' },
     el('div', { class: 'hero-inner' },
       el('span', { class: 'tl-eyebrow', style: { display: 'inline-flex', alignItems: 'center', gap: '8px' } }, 
-        el('img', { src: '/eduflash_badge.svg', style: { height: '18px', width: 'auto' } }),
+        el('img', { src: '/eduflash_badge.svg', style: { height: '22px', width: 'auto' } }),
         'High-Performance USDT Software'
       ),
       el('h1', { html: `Instant <br /><span class="accent">USDT Flash Transfers</span>` }),

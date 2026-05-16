@@ -59,7 +59,17 @@ function renderContactStep(plan, opt, isDemo, onNext) {
     el('div', { style: { display: 'grid', gap: '20px' } },
       renderField('Full Name', 'checkout_name', 'Enter your full name'),
       renderField('Email Address', 'checkout_email', 'your@email.com', 'email'),
-      renderField('WhatsApp or Telegram', 'checkout_contact', '+1234567890 or @username'),
+      
+      el('div', { class: 'row gap-12', style: { alignItems: 'flex-start' } },
+        el('div', { class: 'field', style: { width: '100px' } },
+          el('label', { for: 'checkout_cc', style: { fontSize: '13px', marginBottom: '6px', display: 'block' } }, 'Code'),
+          el('input', { id: 'checkout_cc', type: 'text', placeholder: '+1', required: true })
+        ),
+        el('div', { class: 'field', style: { flex: 1 } },
+          el('label', { for: 'checkout_contact', style: { fontSize: '13px', marginBottom: '6px', display: 'block' } }, 'WhatsApp or Telegram'),
+          el('input', { id: 'checkout_contact', type: 'text', placeholder: '1234567890 or @username', required: true })
+        )
+      ),
       
       el('div', { class: 'row gap-12', style: { padding: '16px', background: 'rgba(20, 184, 166, 0.05)', border: '1px solid rgba(94, 234, 212, 0.1)', borderRadius: '10px' } },
         el('div', { style: { color: 'var(--green)' }, html: icons.shield('sm') }),
@@ -71,12 +81,14 @@ function renderContactStep(plan, opt, isDemo, onNext) {
         onClick: () => {
           const name = $('#checkout_name').value.trim();
           const email = $('#checkout_email').value.trim();
-          const contact = $('#checkout_contact').value.trim();
+          const cc = $('#checkout_cc').value.trim();
+          const number = $('#checkout_contact').value.trim();
 
-          if (!name || !email || !contact) {
+          if (!name || !email || !cc || !number) {
             toast({ title: 'Missing fields', description: 'Please fill in all required contact information.', kind: 'error' });
             return;
           }
+          const contact = `${cc} ${number}`;
           onNext({ name, email, contact });
         }
       }, 'Continue to Payment')

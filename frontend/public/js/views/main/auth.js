@@ -11,8 +11,11 @@ export async function renderAuth(root, mode = 'login') {
 
   const page = el('div', { class: 'auth-page' });
   page.appendChild(el('a', { class: 'brand auth-brand', href: '#/' },
-    el('div', { class: 'logo', html: icons.activity('sm') }),
-    el('span', { class: 'brand-text' }, 'EduFlash'),
+    el('img', { src: '/eduflash_badge.svg', style: { height: '42px', width: 'auto' } }),
+    el('div', { class: 'brand-info' },
+      el('span', { class: 'brand-text' }, 'EduFlash'),
+      el('span', { class: 'brand-tagline' }, 'Blockchain Research Education & Laboratory'),
+    ),
   ));
 
   const card = el('form', { class: 'tl-card auth-card' });
@@ -28,7 +31,7 @@ export async function renderAuth(root, mode = 'login') {
             email: data.email, 
             password: data.password, 
             name: data.name,
-            contact_number: data.contact_number
+            contact_number: `${data.cc} ${data.contact_number}`
           });
       setToken(res.token);
       setUser(res.user);
@@ -54,11 +57,18 @@ export async function renderAuth(root, mode = 'login') {
       el('label', { for: 'name' }, 'Full Name'),
       el('input', { id: 'name', name: 'name', type: 'text', required: true, maxlength: 80, autocomplete: 'name' }),
     ));
-    card.appendChild(el('div', { class: 'field' },
-      el('label', { for: 'contact_number' }, 'WhatsApp or Telegram No'),
-      el('input', { id: 'contact_number', name: 'contact_number', type: 'text', placeholder: 'e.g. +1234567890', required: true }),
-      el('div', { style: { fontSize: '11px', color: '#94a3b8', marginTop: '6px' } }, 'Required for account verification and license activation.'),
+    
+    card.appendChild(el('div', { class: 'row gap-12', style: { alignItems: 'flex-start' } },
+      el('div', { class: 'field', style: { width: '80px' } },
+        el('label', { for: 'cc' }, 'Code'),
+        el('input', { id: 'cc', name: 'cc', type: 'text', placeholder: '+1', required: true }),
+      ),
+      el('div', { class: 'field', style: { flex: 1 } },
+        el('label', { for: 'contact_number' }, 'WhatsApp or Telegram No'),
+        el('input', { id: 'contact_number', name: 'contact_number', type: 'text', placeholder: '1234567890', required: true }),
+      )
     ));
+    card.appendChild(el('div', { style: { fontSize: '11px', color: '#94a3b8', marginTop: '-8px', marginBottom: '14px' } }, 'Required for account verification and license activation.'));
   }
   card.appendChild(el('div', { class: 'field' },
     el('label', { for: 'email' }, 'Email'),
