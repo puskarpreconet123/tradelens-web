@@ -359,8 +359,7 @@ async function renderPricing() {
 
 async function onRequest(plan, optIdx, btn, isDemo = false) {
   if (!isAuthed()) {
-    toast({ title: 'Please sign in', description: 'You need an account to request a plan.' });
-    window.location.hash = '#/login';
+    openLeadModal(plan, optIdx, isDemo);
     return;
   }
   const original = btn.textContent;
@@ -375,6 +374,62 @@ async function onRequest(plan, optIdx, btn, isDemo = false) {
   } finally {
     btn.disabled = false; btn.textContent = original;
   }
+}
+
+function openLeadModal(plan, optIdx, isDemo) {
+  const content = el('div', { class: 'lead-modal' },
+    el('div', { class: 'lead-intro' },
+      el('h4', { style: { color: '#5eead4', marginBottom: '8px' } }, 'Ready to get started?'),
+      el('p', { style: { fontSize: '14px', color: '#94a3b8', lineHeight: '1.6' } }, 
+        `You've selected the ${isDemo ? 'Demo' : plan.name} plan. Provide your contact details and our team will reach out via WhatsApp or Telegram to activate your access.`
+      ),
+    ),
+    el('div', { class: 'lead-form', style: { marginTop: '20px', display: 'grid', gap: '12px' } },
+      renderLeadField('Full Name', 'lead_name', 'Enter your name'),
+      renderLeadField('Email Address', 'lead_email', 'name@example.com', 'email'),
+      renderLeadField('WhatsApp / Telegram', 'lead_contact', '+1 234 567 8900'),
+    )
+  );
+
+  openModal({
+    title: 'Complete Your Request',
+    content,
+    confirmText: 'Submit Request',
+    onConfirm: async () => {
+      const name = $('#lead_name').value.trim();
+      const email = $('#lead_email').value.trim();
+      const contact = $('#lead_contact').value.trim();
+
+      if (!name || !email || !contact) {
+        toast({ title: 'Missing info', description: 'Please fill in all fields to proceed.', kind: 'error' });
+        throw new Error('Missing info');
+      }
+
+      try {
+        const body = isDemo 
+          ? { demo: true, guest_name: name, guest_email: email, guest_contact: contact }
+          : { plan_id: plan.id, option_index: optIdx, guest_name: name, guest_email: email, guest_contact: contact };
+        
+        await api.post('/requests', body);
+        toast({ title: 'Lead submitted!', description: 'Our team will contact you shortly to finalize your setup.', kind: 'success' });
+      } catch (e) {
+        toast({ title: 'Submission failed', description: e.message, kind: 'error' });
+        throw e;
+      }
+    }
+  });
+}
+
+function renderLeadField(label, id, placeholder, type = 'text') {
+  return el('div', { class: 'field' },
+    el('label', { for: id, style: { fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#64748b', marginBottom: '4px', display: 'block' } }, label),
+    el('input', { 
+      id, 
+      type, 
+      placeholder, 
+      style: { width: '100%', padding: '10px 12px', background: 'rgba(8,12,16,0.6)', border: '1px solid rgba(94,234,212,0.15)', borderRadius: '8px', color: '#f1f5f9', fontSize: '14px' } 
+    }),
+  );
 }
 
 function renderFaq() {

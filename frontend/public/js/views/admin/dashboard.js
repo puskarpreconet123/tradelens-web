@@ -100,11 +100,11 @@ export async function renderAdminDashboard(root) {
       clear(statsRow);
       const items = [
         { v: s.users, l: 'Total Users' },
+        { v: s.leads, l: 'Total Leads', c: 'cyan' },
         { v: s.pending_requests, l: 'Pending Reqs', c: 'amber' },
         { v: s.approved_requests, l: 'Approved', c: 'green' },
         { v: s.rejected_requests, l: 'Rejected', c: 'rose' },
         { v: s.active_licenses, l: 'Active Licenses' },
-        { v: s.total_backtests, l: 'USDT Flashed' },
       ];
       items.forEach(i => statsRow.appendChild(el('div', { class: 'admin-stat ' + (i.c || '') },
         el('div', { class: 'val' }, Number(i.v).toLocaleString()),
@@ -159,19 +159,31 @@ export async function renderAdminDashboard(root) {
 }
 
 function renderRequestCard(r, refresh) {
-  const card = el('div', { class: 'tl-card req-card' });
+  const card = el('div', { class: 'tl-card req-card' + (r.is_lead ? ' is-lead' : '') });
   const info = el('div', { class: 'req-info' });
-  info.appendChild(el('div', { class: 'req-top' },
+  
+  const top = el('div', { class: 'req-top' },
     el('span', { class: 'req-plan' }, r.plan_name),
     el('span', { class: `pill ${r.status}` }, r.status),
-    Number(r.is_demo) === 1 ? el('span', { class: 'pill expired' }, 'DEMO') : null,
-  ));
+  );
+  if (r.is_lead) top.appendChild(el('span', { class: 'pill', style: { background: 'rgba(94, 234, 212, 0.1)', color: '#5eead4', border: '1px solid rgba(94, 234, 212, 0.2)' } }, 'LEAD'));
+  if (Number(r.is_demo) === 1) top.appendChild(el('span', { class: 'pill expired' }, 'DEMO'));
+  
+  info.appendChild(top);
   info.appendChild(el('div', { class: 'req-user', html: `${r.user_name} \u00b7 <code>${r.user_email}</code>` }));
+  
+  if (r.guest_contact) {
+    info.appendChild(el('div', { class: 'req-contact', style: { fontSize: '13px', color: '#5eead4', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '6px' } }, 
+      `${icons.message('xs')} ${r.guest_contact}`
+    ));
+  }
+
   info.appendChild(el('div', { class: 'req-meta' },
     el('span', {}, `Period: ${r.period}`),
     el('span', {}, `Price: $${Number(r.price_usd).toFixed(2)}`),
     el('span', {}, `Submitted: ${fmtDate(r.created_at)}`),
   ));
+  
   if (r.status === 'rejected' && r.reject_reason) {
     info.appendChild(el('div', { class: 'req-rejected-reason', html: `Reason: ${escapeHtml(r.reject_reason)}` }));
   }

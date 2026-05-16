@@ -178,10 +178,21 @@ function handle_demo_plan(): void {
 }
 
 function handle_create_request(): void {
-    $u = tl_require_auth();
+    $u = tl_current_user(); // Optional auth
     $b = tl_read_json();
     $isDemo = (bool)($b['demo'] ?? false);
     $db = tl_db();
+
+    $guest_name = trim((string)($b['guest_name'] ?? ''));
+    $guest_email = strtolower(trim((string)($b['guest_email'] ?? '')));
+    $guest_contact = trim((string)($b['guest_contact'] ?? ''));
+
+    if (!$u) {
+        if ($guest_name === '' || $guest_email === '' || $guest_contact === '') {
+            tl_error('Please provide your name, email, and contact method (WhatsApp/Telegram).', 422);
+        }
+        if (!tl_validate_email($guest_email)) tl_error('Invalid email format.', 422);
+    }
 
     if ($isDemo) {
         $r = $db->demo_plan->findOne(['id' => 'demo']);
@@ -209,29 +220,35 @@ function handle_create_request(): void {
         $price_usd = (float)$opt['price_usd'];
     }
 
-    // Prevent duplicate pending
-    $check = $db->package_requests->findOne([
-        'user_id' => $u['id'],
-        'plan_id' => $plan_id,
-        'status' => 'pending'
-    ]);
-    if ($check) tl_error('You already have a pending request for this plan. Please wait for admin approval.', 409);
+    // Prevent duplicate pending for registered users
+    if ($u) {
+        $check = $db->package_requests->findOne([
+            'user_id' => $u['id'],
+            'plan_id' => $plan_id,
+            'status' => 'pending'
+        ]);
+        if ($check) tl_error('You already have a pending request for this plan.', 409);
+    }
 
     $id = tl_uuid();
-    $db->package_requests->insertOne([
+    $request_data = [
         'id' => $id,
-        'user_id' => $u['id'],
-        'user_email' => $u['email'],
-        'user_name' => $u['name'],
+        'user_id' => $u['id'] ?? null,
+        'user_email' => $u['email'] ?? $guest_email,
+        'user_name' => $u['name'] ?? $guest_name,
+        'guest_contact' => $guest_contact ?: null,
         'plan_id' => $plan_id,
         'plan_name' => $plan_name,
         'period' => $period,
         'price_usd' => $price_usd,
         'option_index' => $option_index,
         'is_demo' => $isDemo,
+        'is_lead' => $u ? false : true,
         'status' => 'pending',
         'created_at' => date('c')
-    ]);
+    ];
+
+    $db->package_requests->insertOne($request_data);
 
     $res = $db->package_requests->findOne(['id' => $id]);
     $out = (array)$res;
@@ -389,6 +406,7 @@ function handle_admin_stats(): void {
     $now = date('c');
     $stats = [
         'users'              => $db->users->countDocuments(['role' => 'user']),
+        'leads'              => $db->package_requests->countDocuments(['is_lead' => true]),
         'pending_requests'   => $db->package_requests->countDocuments(['status' => 'pending']),
         'approved_requests'  => $db->package_requests->countDocuments(['status' => 'approved']),
         'rejected_requests'  => $db->package_requests->countDocuments(['status' => 'rejected']),
