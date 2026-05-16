@@ -212,15 +212,15 @@ svg.icon.lg { width: 22px; height: 22px; }
 .checkout-wrap { display: grid; grid-template-columns: 1fr; gap: 30px; margin-top: 40px; }
 @media (min-width: 1024px) { .checkout-wrap { grid-template-columns: 1.6fr 1fr; } }
 
-.checkout-steps { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 40px; }
-.checkout-step { display: flex; flex-direction: column; align-items: center; gap: 8px; position: relative; }
-.checkout-step .step-icon { width: 44px; height: 44px; border-radius: 50%; background: rgba(15, 23, 28, 0.8); border: 2px solid rgba(94, 234, 212, 0.1); display: grid; place-items: center; color: var(--muted); transition: all 300ms ease; }
+.checkout-steps { display: flex; align-items: flex-start; justify-content: center; gap: 0; margin-bottom: 40px; }
+.checkout-step { display: flex; flex-direction: column; align-items: center; gap: 12px; position: relative; width: 120px; }
+.checkout-step .step-icon { width: 44px; height: 44px; border-radius: 50%; background: rgba(15, 23, 28, 0.8); border: 2px solid rgba(94, 234, 212, 0.1); display: grid; place-items: center; color: var(--muted); transition: all 300ms ease; z-index: 2; position: relative; }
 .checkout-step.active .step-icon { border-color: var(--cyan); color: var(--cyan); background: rgba(34, 211, 238, 0.1); box-shadow: 0 0 20px rgba(34, 211, 238, 0.2); }
 .checkout-step.completed .step-icon { border-color: var(--green); color: var(--green); background: rgba(94, 234, 212, 0.1); }
-.checkout-step .step-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+.checkout-step .step-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); text-align: center; }
 .checkout-step.active .step-label { color: var(--text-strong); }
 
-.checkout-step:not(:last-child)::after { content: ''; position: absolute; top: 22px; left: calc(50% + 30px); width: 40px; height: 2px; background: rgba(94, 234, 212, 0.1); z-index: -1; }
+.checkout-step:not(:last-child)::after { content: ''; position: absolute; top: 22px; left: calc(50% + 22px); width: 76px; height: 2px; background: rgba(94, 234, 212, 0.1); z-index: 1; }
 .checkout-step.completed:not(:last-child)::after { background: var(--green); }
 
 .checkout-card { padding: 30px; }
