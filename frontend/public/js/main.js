@@ -3,6 +3,7 @@ import { Router } from './lib/router.js';
 import { renderLanding } from './views/main/landing.js';
 import { renderAuth } from './views/main/auth.js';
 import { renderDashboard } from './views/main/dashboard.js';
+import { renderCheckout } from './views/main/checkout.js';
 import { isAuthed, isAdmin } from './lib/auth.js';
 
 const routes = [
@@ -10,6 +11,7 @@ const routes = [
   { path: /^\/login$/,       view: (root) => renderAuth(root, 'login') },
   { path: /^\/register$/,    view: (root) => renderAuth(root, 'register') },
   { path: /^\/dashboard$/,   view: renderDashboard },
+  { path: /^\/checkout$/,    view: renderCheckout },
 ];
 
 const router = new Router('app', routes, {
