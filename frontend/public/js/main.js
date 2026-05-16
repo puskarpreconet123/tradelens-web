@@ -4,6 +4,7 @@ import { renderLanding } from './views/main/landing.js';
 import { renderAuth } from './views/main/auth.js';
 import { renderDashboard } from './views/main/dashboard.js';
 import { renderCheckout } from './views/main/checkout.js';
+import { renderTerms, renderPrivacy } from './views/main/legal.js';
 import { isAuthed, isAdmin } from './lib/auth.js';
 
 const routes = [
@@ -12,6 +13,8 @@ const routes = [
   { path: /^\/register$/,    view: (root) => renderAuth(root, 'register') },
   { path: /^\/dashboard$/,   view: renderDashboard },
   { path: /^\/checkout$/,    view: renderCheckout },
+  { path: /^\/terms$/,       view: renderTerms },
+  { path: /^\/privacy$/,      view: renderPrivacy },
 ];
 
 const router = new Router('app', routes, {

@@ -20,7 +20,7 @@ export function renderNavbar() {
   const nav = el('header', { class: 'navbar' });
   const inner = el('div', { class: 'inner' });
   inner.appendChild(el('a', { class: 'brand', href: '#/' },
-    el('div', { class: 'logo', html: icons.activity('sm') }),
+    el('img', { src: '/eduflash_badge.svg', style: { width: '32px', height: '32px', borderRadius: '8px' } }),
     el('span', { class: 'brand-text' }, 'EduFlash'),
   ));
   inner.appendChild(el('nav', { class: 'nav-links' },
@@ -87,7 +87,7 @@ export function renderFooter() {
   const inner = el('div', { class: 'footer-inner' });
   inner.appendChild(el('div', { class: 'footer-brand-col' },
     el('a', { class: 'brand', href: '#/' },
-      el('div', { class: 'logo', html: icons.activity('sm') }),
+      el('img', { src: '/eduflash_badge.svg', style: { width: '32px', height: '32px', borderRadius: '8px' } }),
       el('span', { class: 'brand-text' }, 'EduFlash'),
     ),
     el('p', { style: { marginTop: '14px' } }, 'Enterprise-grade software for USDT flash transfers. Built for speed, anonymity, and trust.'),
@@ -107,7 +107,7 @@ export function renderFooter() {
   f.appendChild(inner);
   f.appendChild(el('div', { class: 'footer-bottom' },
     el('span', {}, `\u00a9 ${new Date().getFullYear()} EduFlash, Inc. All rights reserved.`),
-    el('div', { class: 'row gap-16 wrap', html: `<a href="#">Terms</a> <a href="#">Privacy</a> <a href="/admin/" style="opacity:0.5;">Admin</a> <span class="mono" style="color:#5eead4;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding-left:14px;border-left:1px solid rgba(94,234,212,0.18);"><span class="dot sm"></span> All systems operational</span>` }),
+    el('div', { class: 'row gap-16 wrap', html: `<a href="#/terms">Terms</a> <a href="#/privacy">Privacy</a> <span class="mono" style="color:#5eead4;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding-left:14px;border-left:1px solid rgba(94,234,212,0.18);"><span class="dot sm"></span> All systems operational</span>` }),
   ));
   return f;
 }
@@ -115,7 +115,7 @@ export function renderFooter() {
 export function renderPreloader() {
   const pre = el('div', { class: 'preloader' });
   pre.appendChild(el('div', { class: 'row gap-12' },
-    el('div', { class: 'logo', html: icons.activity() }),
+    el('img', { src: '/eduflash_badge.svg', style: { width: '48px', height: '48px', borderRadius: '10px' } }),
     el('div', {},
       el('div', { style: { fontFamily: 'Space Grotesk', fontSize: '22px', fontWeight: '600', color: '#f1f5f9' } }, 'EduFlash'),
       el('div', { class: 'mono', style: { fontSize: '11px', letterSpacing: '0.18em', color: '#5eead4', textTransform: 'uppercase' } }, 'Loading secure environment\u2026'),

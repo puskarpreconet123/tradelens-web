@@ -58,7 +58,10 @@ export async function renderLanding(root) {
   // Hero
   const hero = el('section', { class: 'hero', id: 'top' },
     el('div', { class: 'hero-inner' },
-      el('span', { class: 'tl-eyebrow', html: `<span class="dot sm"></span> High-Performance USDT Software` }),
+      el('span', { class: 'tl-eyebrow', style: { display: 'inline-flex', alignItems: 'center', gap: '8px' } }, 
+        el('img', { src: '/eduflash_badge.svg', style: { height: '18px', width: 'auto' } }),
+        'High-Performance USDT Software'
+      ),
       el('h1', { html: `Instant <br /><span class="accent">USDT Flash Transfers</span>` }),
       el('p', { class: 'sub' }, 'Enterprise-grade software for USDT flash transfers with AES-256 security, real-time monitoring, and a 99.9% success rate across multiple blockchain networks.'),
       el('div', { class: 'hero-cta' },
