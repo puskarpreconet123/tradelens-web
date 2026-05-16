@@ -19,7 +19,7 @@ export async function renderCheckout(root) {
   root.appendChild(statusBar());
   root.appendChild(renderNavbar());
 
-  const container = el('div', { class: 'section', style: { minHeight: '80vh', paddingTop: '40px' } },
+  const container = el('div', { class: 'section', style: { minHeight: '80vh', paddingTop: '140px' } },
     el('a', { href: '#/', class: 'row gap-8', style: { color: 'var(--muted)', fontSize: '13px', marginBottom: '32px' }, html: `${icons.arrowRight('sm')} Back to Home` }),
     
     // Steps
