@@ -26,8 +26,7 @@ export async function renderCheckout(root) {
     // Steps
     el('div', { class: 'checkout-steps' },
       renderStep('1', 'Contact Info', 'active', 'message'),
-      renderStep('2', 'Payment', '', 'receipt'),
-      renderStep('3', 'Verify', '', 'shield'),
+      renderStep('2', 'Verify', '', 'shield'),
     ),
 
     el('div', { class: 'checkout-wrap' },
@@ -128,9 +127,10 @@ async function submitLead(plan, optIdx, isDemo, data) {
     container.appendChild(renderSuccessState());
     
     // Update steps
-    $$('.checkout-step')[0].classList.add('completed');
-    $$('.checkout-step')[0].classList.remove('active');
-    $$('.checkout-step')[1].classList.add('active');
+    const steps = document.querySelectorAll('.checkout-step');
+    steps[0].classList.add('completed');
+    steps[0].classList.remove('active');
+    steps[1].classList.add('active');
     
     toast({ title: 'Request submitted!', description: 'Our team will contact you shortly.', kind: 'success' });
   } catch (e) {
