@@ -20,7 +20,7 @@ export function renderNavbar() {
   const nav = el('header', { class: 'navbar' });
   const inner = el('div', { class: 'inner' });
   inner.appendChild(el('a', { class: 'brand', href: '#/' },
-    el('img', { src: '/eduflash_badge.svg', style: { height: '42px', width: 'auto', display: 'block' } }),
+    el('img', { src: '/eduflash_badge.svg', style: { width: '32px', height: '32px', display: 'block' } }),
     el('div', { class: 'brand-info' },
       el('span', { class: 'brand-text' }, 'EduFlash'),
       el('span', { class: 'brand-tagline' }, 'Blockchain Research Education & Laboratory'),
@@ -90,7 +90,7 @@ export function renderFooter() {
   const inner = el('div', { class: 'footer-inner' });
   inner.appendChild(el('div', { class: 'footer-brand-col' },
     el('a', { class: 'brand', href: '#/' },
-      el('img', { src: '/eduflash_badge.svg', style: { height: '42px', width: 'auto', display: 'block' } }),
+      el('img', { src: '/eduflash_badge.svg', style: { width: '32px', height: '32px', display: 'block' } }),
       el('div', { class: 'brand-info' },
         el('span', { class: 'brand-text' }, 'EduFlash'),
         el('span', { class: 'brand-tagline' }, 'Blockchain Research Education & Laboratory'),
@@ -121,7 +121,7 @@ export function renderFooter() {
 export function renderPreloader() {
   const pre = el('div', { class: 'preloader' });
   pre.appendChild(el('div', { class: 'row gap-12' },
-    el('img', { src: '/eduflash_badge.svg', style: { height: '52px', width: 'auto', display: 'block' } }),
+    el('img', { src: '/eduflash_badge.svg', style: { width: '48px', height: '48px', display: 'block' } }),
     el('div', { class: 'brand-info' },
       el('div', { style: { fontFamily: 'Space Grotesk', fontSize: '24px', fontWeight: '600', color: '#f1f5f9', lineHeight: '1' } }, 'EduFlash'),
       el('div', { class: 'brand-tagline', style: { fontSize: '9px', opacity: '0.7' } }, 'Blockchain Research Education & Laboratory'),

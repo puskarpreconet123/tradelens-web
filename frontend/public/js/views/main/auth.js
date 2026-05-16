@@ -11,7 +11,7 @@ export async function renderAuth(root, mode = 'login') {
 
   const page = el('div', { class: 'auth-page' });
   page.appendChild(el('a', { class: 'brand auth-brand', href: '#/' },
-    el('img', { src: '/eduflash_badge.svg', style: { height: '42px', width: 'auto' } }),
+    el('img', { src: '/eduflash_badge.svg', style: { width: '32px', height: '32px' } }),
     el('div', { class: 'brand-info' },
       el('span', { class: 'brand-text' }, 'EduFlash'),
       el('span', { class: 'brand-tagline' }, 'Blockchain Research Education & Laboratory'),
