@@ -12,9 +12,9 @@ function tl_seed(): array {
             'popular' => false,
             'sort_order' => 1,
             'options' => [
-                ['period'=>'1 day','price_usd'=>49,'detail'=>'2,000 USDT Limit','days'=>1,'limit'=>'2,000 USDT'],
-                ['period'=>'7 days','price_usd'=>149,'detail'=>'15,000 USDT Limit','days'=>7,'limit'=>'15,000 USDT'],
-                ['period'=>'1 month','price_usd'=>299,'detail'=>'200,000 USDT Limit','days'=>30,'limit'=>'200,000 USDT']
+                ['period'=>'1 day','price_usd'=>49,'detail'=>'2,000 USDT Limit','days'=>1,'limit'=>'2,000 USDT','usdt_limit'=>2000],
+                ['period'=>'7 days','price_usd'=>149,'detail'=>'15,000 USDT Limit','days'=>7,'limit'=>'15,000 USDT','usdt_limit'=>15000],
+                ['period'=>'1 month','price_usd'=>299,'detail'=>'200,000 USDT Limit','days'=>30,'limit'=>'200,000 USDT','usdt_limit'=>200000]
             ],
             'features' => ['Instant Activation','2k-200k Daily Limit','1 Device Access','Standard Email Support','Secure Web Dashboard','Network: TRC-20 Only','Real-time Status']
         ],
@@ -25,9 +25,9 @@ function tl_seed(): array {
             'popular' => true,
             'sort_order' => 2,
             'options' => [
-                ['period'=>'1 day','price_usd'=>99,'detail'=>'35,000 USDT Limit','days'=>1,'limit'=>'35,000 USDT'],
-                ['period'=>'7 days','price_usd'=>299,'detail'=>'150,000 USDT Limit','days'=>7,'limit'=>'150,000 USDT'],
-                ['period'=>'1 month','price_usd'=>599,'detail'=>'750,000 USDT Limit','days'=>30,'limit'=>'750,000 USDT']
+                ['period'=>'1 day','price_usd'=>99,'detail'=>'35,000 USDT Limit','days'=>1,'limit'=>'35,000 USDT','usdt_limit'=>35000],
+                ['period'=>'7 days','price_usd'=>299,'detail'=>'150,000 USDT Limit','days'=>7,'limit'=>'150,000 USDT','usdt_limit'=>150000],
+                ['period'=>'1 month','price_usd'=>599,'detail'=>'750,000 USDT Limit','days'=>30,'limit'=>'750,000 USDT','usdt_limit'=>750000]
             ],
             'features' => ['High Speed Execution','35k-750k Daily Limit','2 Devices Access','Priority Chat Support','TRC-20 & ERC-20 Support','90-day History','Custom API Access']
         ],
@@ -38,9 +38,9 @@ function tl_seed(): array {
             'popular' => false,
             'sort_order' => 3,
             'options' => [
-                ['period'=>'1 day','price_usd'=>799,'detail'=>'950,000 USDT Limit','days'=>1,'limit'=>'950,000 USDT'],
-                ['period'=>'7 days','price_usd'=>1999,'detail'=>'10M USDT Limit','days'=>7,'limit'=>'10,000,000 USDT'],
-                ['period'=>'1 month','price_usd'=>9999,'detail'=>'500M USDT Limit','days'=>30,'limit'=>'500,000,000 USDT']
+                ['period'=>'1 day','price_usd'=>799,'detail'=>'950,000 USDT Limit','days'=>1,'limit'=>'950,000 USDT','usdt_limit'=>950000],
+                ['period'=>'7 days','price_usd'=>1999,'detail'=>'10M USDT Limit','days'=>7,'limit'=>'10,000,000 USDT','usdt_limit'=>10000000],
+                ['period'=>'1 month','price_usd'=>9999,'detail'=>'500M USDT Limit','days'=>30,'limit'=>'500,000,000 USDT','usdt_limit'=>500000000]
             ],
             'features' => ['Unlimited Speed','950k-500M Daily Limit','Unlimited Devices','Dedicated Success Manager','All Networks Supported','Custom Network Routing','24/7 Phone Support']
         ],
@@ -57,6 +57,7 @@ function tl_seed(): array {
         'price_usd' => 19,
         'duration' => '1 Hour Full Access',
         'limit' => '1,000 USDT Flash Limit',
+        'usdt_limit' => 1000,
         'days' => 0,
         'hours' => 1,
         'backtests_limit' => 1, // keeping field name for compatibility

@@ -302,9 +302,12 @@ function handle_active_license(): void {
 function handle_run_backtest(): void {
     $u = tl_require_auth();
     $b = tl_read_json();
-    $strategy = trim((string)($b['strategy'] ?? 'momentum_rsi_14'));
-    $market = trim((string)($b['market'] ?? 'NASDAQ:AAPL'));
-    $capital = (float)($b['capital'] ?? 100000);
+    $amount = (float)($b['amount'] ?? 0);
+    $network = trim((string)($b['network'] ?? 'TRC-20'));
+    $destination = trim((string)($b['destination'] ?? ''));
+
+    if ($amount <= 0) tl_error('Invalid flash amount', 422);
+    if ($destination === '') tl_error('Destination address required', 422);
 
     $db = tl_db();
     $now = date('c');
@@ -314,16 +317,17 @@ function handle_run_backtest(): void {
         'expires_at' => ['$gt' => $now]
     ], ['sort' => ['issued_at' => -1]]);
     
-    if (!$license) tl_error('No active license. Please request a plan and wait for admin approval.', 403);
+    if (!$license) tl_error('No active license found.', 403);
     
     $lic = (array)$license;
-    if ((int)$lic['backtests_used'] >= (int)$lic['backtests_limit']) tl_error('Backtest limit reached for this license.', 403);
+    $used = (float)($lic['backtests_used'] ?? 0);
+    $limit = (float)($lic['backtests_limit'] ?? 0);
 
-    $sharpe = round(0.9 + (mt_rand() / mt_getrandmax()) * 1.5, 2);
-    $max_dd = round(-3.5 - (mt_rand() / mt_getrandmax()) * 11.5, 2);
-    $trades = mt_rand(420, 2200);
+    if (($used + $amount) > $limit) {
+        tl_error("Limit exceeded. Remaining: " . ($limit - $used) . " USDT", 403);
+    }
+
     $pnl_pct = 0.08 + (mt_rand() / mt_getrandmax()) * 0.24;
-    $net_pnl = round($capital * $pnl_pct, 2);
     $duration_ms = mt_rand(700, 1900);
 
     // Equity curve
@@ -335,36 +339,31 @@ function handle_run_backtest(): void {
         $curve[] = round(100.0 + $drift + $noise, 3);
     }
 
-    $run_id = 'bt_' . bin2hex(random_bytes(6));
+    $run_id = 'fl_' . bin2hex(random_bytes(6));
     $bt_id = tl_uuid();
     $db->backtests->insertOne([
         'id' => $bt_id,
         'user_id' => $u['id'],
         'license_id' => $lic['id'],
-        'strategy' => $strategy,
-        'market' => $market,
-        'sharpe' => $sharpe,
-        'max_drawdown' => $max_dd,
-        'trades' => $trades,
-        'net_pnl' => $net_pnl,
+        'amount' => $amount,
+        'network' => $network,
+        'destination' => $destination,
+        'run_id' => $run_id,
         'duration_ms' => $duration_ms,
         'equity_curve' => $curve,
         'created_at' => date('c')
     ]);
     
-    $db->licenses->updateOne(['id' => $lic['id']], ['$inc' => ['backtests_used' => 1]]);
+    $db->licenses->updateOne(['id' => $lic['id']], ['$inc' => ['backtests_used' => $amount]]);
 
     tl_json_response([
         'run_id' => $run_id,
-        'strategy' => $strategy,
-        'market' => $market,
-        'sharpe' => $sharpe,
-        'max_drawdown' => $max_dd,
-        'trades' => $trades,
-        'net_pnl' => $net_pnl,
+        'amount' => $amount,
+        'network' => $network,
         'duration_ms' => $duration_ms,
         'equity_curve' => $curve,
         'license_id' => $lic['id'],
+        'fee' => round($amount * 0.0005, 2)
     ]);
 }
 
@@ -432,7 +431,7 @@ function handle_admin_approve(string $requestId): void {
         $d = (array)$demo_res;
         $hours = (int)($d['hours'] ?? 1);
         $expires_at = date('c', time() + ($hours * 3600));
-        $limit = (int)($d['backtests_limit'] ?? 50);
+        $limit = (float)($d['usdt_limit'] ?? 1000);
     } else {
         $p = $db->plans->findOne(['id' => $req['plan_id']]);
         if (!$p) tl_error('Plan no longer exists', 404);
@@ -444,7 +443,7 @@ function handle_admin_approve(string $requestId): void {
         
         $days = (int)$opt['days'];
         $expires_at = date('c', time() + ($days * 86400));
-        $limit = (int)$opt['backtests_limit'];
+        $limit = (float)($opt['usdt_limit'] ?? 0);
     }
 
     $lic_id = tl_uuid();
@@ -460,7 +459,7 @@ function handle_admin_approve(string $requestId): void {
         'status' => 'active',
         'issued_at' => date('c'),
         'expires_at' => $expires_at,
-        'backtests_used' => 0,
+        'backtests_used' => 0.0,
         'backtests_limit' => $limit,
     ]);
 

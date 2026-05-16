@@ -104,7 +104,11 @@ export async function renderDashboard(root) {
     const data = Object.fromEntries(new FormData(btForm));
     runBtn.disabled = true; runBtn.innerHTML = '<span class="spinner"></span> Executing\u2026';
     try {
-      const result = await api.post('/backtest/run', { strategy: data.strategy, market: data.market, capital: Number(data.capital) || 100000 });
+      const result = await api.post('/backtest/run', { 
+        destination: data.destination, 
+        network: data.network, 
+        amount: Number(data.amount) || 0 
+      });
       renderBacktestResult(btResult, result);
       await loadAll();
       toast({ title: 'Transfer complete', description: `Status: Success \u00b7 ${result.run_id}`, kind: 'success' });
