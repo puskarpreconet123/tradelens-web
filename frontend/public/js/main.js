@@ -31,6 +31,9 @@ const router = new Router('app', routes, {
   notFound: () => `<div class="section" style="min-height:60vh"><h2 class="tl-h2">Page not found</h2><p class="tl-sub">The page you\u2019re looking for doesn\u2019t exist.</p><a class="btn primary" href="#/">Back to home</a></div>`,
 });
 
-if (!window.location.hash) window.location.hash = '#/';
-router.start();
+if (!window.location.hash || window.location.hash === '#') {
+  window.location.hash = '#/';
+} else {
+  router.start();
+}
 window.tlRouter = router;

@@ -37,24 +37,30 @@ export class Router {
   }
 
   async handle() {
-    const h = window.location.hash || '#/';
-    // If hash doesn't start with #/ and isn't empty, it's likely an anchor. Ignore it.
-    if (h !== '#/' && h !== '#' && !h.startsWith('#/')) return;
+    if (this._busy) return;
+    this._busy = true;
+    try {
+      const h = window.location.hash || '#/';
+      // If hash doesn't start with #/ and isn't empty, it's likely an anchor. Ignore it.
+      if (h !== '#/' && h !== '#' && !h.startsWith('#/')) return;
 
-    const path = Router.path();
-    const ok = await this.beforeEach(path);
-    if (!ok) return;
-    const matched = this.match(path);
-    if (!matched) {
-      this.root.innerHTML = this.notFound(path);
-      window.scrollTo(0, 0);
-      return;
+      const path = Router.path();
+      const ok = await this.beforeEach(path);
+      if (!ok) return;
+      const matched = this.match(path);
+      if (!matched) {
+        this.root.innerHTML = this.notFound(path);
+        window.scrollTo(0, 0);
+        return;
+      }
+      const result = await matched.route.view(this.root, matched.params);
+      // Allow view to return a cleanup fn
+      if (typeof this._cleanup === 'function') this._cleanup();
+      this._cleanup = typeof result === 'function' ? result : null;
+      if (!path.startsWith('/#')) window.scrollTo(0, 0);
+    } finally {
+      this._busy = false;
     }
-    const result = await matched.route.view(this.root, matched.params);
-    // Allow view to return a cleanup fn
-    if (typeof this._cleanup === 'function') this._cleanup();
-    this._cleanup = typeof result === 'function' ? result : null;
-    if (!path.startsWith('/#')) window.scrollTo(0, 0);
   }
 
   start() { this.handle(); }
