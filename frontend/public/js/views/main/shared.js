@@ -4,10 +4,10 @@ import { icons } from '../../lib/icons.js';
 import { isAuthed, getUser, clearAuth } from '../../lib/auth.js';
 
 const NAV_LINKS = [
-  { label: 'Platform',     href: '#preview' },
-  { label: 'How it works', href: '#start' },
-  { label: 'Pricing',      href: '#pricing' },
-  { label: 'FAQ',          href: '#faq' },
+  { label: 'Platform',     href: '#/platform' },
+  { label: 'How it works', href: '#/how-it-works' },
+  { label: 'Pricing',      href: '#/pricing' },
+  { label: 'FAQ',          href: '#/faq' },
 ];
 
 export function statusBar() {

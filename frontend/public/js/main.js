@@ -7,7 +7,7 @@ import { renderCheckout } from './views/main/checkout.js';
 import { isAuthed, isAdmin } from './lib/auth.js';
 
 const routes = [
-  { path: /^\/$/,            view: renderLanding },
+  { path: /^\/(platform|how-it-works|pricing|faq)?$/, view: renderLanding },
   { path: /^\/login$/,       view: (root) => renderAuth(root, 'login') },
   { path: /^\/register$/,    view: (root) => renderAuth(root, 'register') },
   { path: /^\/dashboard$/,   view: renderDashboard },

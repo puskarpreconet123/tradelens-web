@@ -107,15 +107,16 @@ export async function renderLanding(root) {
   // Handle anchor jumps
   setTimeout(() => {
     const h = location.hash;
-    if (h && h.length > 1 && h.startsWith('#') && !h.startsWith('#/')) {
-      const t = document.querySelector(h);
+    if (h && h.length > 1) {
+      const id = h.startsWith('#/') ? h.slice(2) : h.slice(1);
+      const t = document.getElementById(id);
       if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  }, 60);
+  }, 100);
 }
 
 function renderPreviewSection() {
-  const section = el('section', { class: 'section', id: 'preview' });
+  const section = el('section', { class: 'section', id: 'platform' });
   section.appendChild(el('div', { style: { textAlign: 'center', maxWidth: '720px', margin: '0 auto 36px' } },
     el('span', { class: 'tl-eyebrow' }, 'Software Preview'),
     el('h2', { class: 'tl-h2', html: `A <span class="accent">pro-grade</span> dashboard` }),
@@ -232,7 +233,7 @@ Content-Type: application/json
 }
 
 function renderQuickStart() {
-  const section = el('section', { class: 'section', id: 'start' });
+  const section = el('section', { class: 'section', id: 'how-it-works' });
   section.appendChild(el('div', { style: { textAlign: 'center', maxWidth: '720px', margin: '0 auto 36px' } },
     el('span', { class: 'tl-eyebrow' }, 'Quick Start Guide'),
     el('h2', { class: 'tl-h2', html: `Go live in <span class="accent">4 simple steps</span>` }),
