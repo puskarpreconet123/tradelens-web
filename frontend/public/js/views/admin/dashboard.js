@@ -173,9 +173,11 @@ function renderRequestCard(r, refresh) {
   info.appendChild(el('div', { class: 'req-user', html: `${r.user_name} \u00b7 <code>${r.user_email}</code>` }));
   
   if (r.guest_contact) {
-    info.appendChild(el('div', { class: 'req-contact', style: { fontSize: '13px', color: '#5eead4', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '6px' } }, 
-      `${icons.message('xs')} ${r.guest_contact}`
-    ));
+    info.appendChild(el('div', { 
+      class: 'req-contact', 
+      style: { fontSize: '13px', color: '#5eead4', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '6px' },
+      html: `${icons.message('xs')} <span>${r.guest_contact}</span>`
+    }));
   }
 
   info.appendChild(el('div', { class: 'req-meta' },
