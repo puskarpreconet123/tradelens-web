@@ -1,7 +1,7 @@
 // /js/views/main/checkout.js — Checkout page renderer
 import { el, clear, toast, $ } from '../../lib/ui.js';
 import { icons } from '../../lib/icons.js';
-import { api, errorMessage } from '../../lib/api.js';
+import { api, errorMessage, getConfig } from '../../lib/api.js';
 import { isAuthed } from '../../lib/auth.js';
 import { renderNavbar, renderFooter, statusBar } from './shared.js';
 
@@ -136,20 +136,35 @@ function renderPaymentStage(plan, opt, isDemo, contactData) {
       el('p', { style: { fontSize: '12px', color: 'var(--muted)', margin: 0, lineHeight: 1.5 } }, 'To ensure the security of our network, all new licenses are manually reviewed. Click below to submit your request.')
     ),
 
+    el('div', { id: 'checkout-recaptcha', style: { marginBottom: '8px', minHeight: '78px' } }),
+
     el('button', {
       class: 'btn primary full lg',
       id: 'final-submit-btn',
       onClick: async (e) => {
         const btn = e.currentTarget;
+        const recaptchaToken = window.grecaptcha ? grecaptcha.getResponse() : null;
         btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Processing\u2026';
         try {
-          await submitLead(plan, null, isDemo, contactData);
+          await submitLead(plan, null, isDemo, contactData, recaptchaToken);
         } finally {
           btn.disabled = false; btn.innerHTML = 'Complete Request';
         }
       }
     }, 'Complete Request')
   ));
+  mainContent.appendChild(card);
+
+  // Render reCAPTCHA
+  setTimeout(async () => {
+    const el = document.getElementById('checkout-recaptcha');
+    if (el && window.grecaptcha) {
+      const config = await getConfig();
+      if (config.recaptcha_site_key) {
+        grecaptcha.render(el, { sitekey: config.recaptcha_site_key });
+      }
+    }
+  }, 100);
 }
 
 function renderField(label, id, placeholder, type = 'text') {
@@ -159,14 +174,14 @@ function renderField(label, id, placeholder, type = 'text') {
   );
 }
 
-async function submitLead(plan, optIdx, isDemo, data) {
+async function submitLead(plan, optIdx, isDemo, data, recaptchaToken) {
   try {
     const planData = JSON.parse(localStorage.getItem('tl_selected_plan') || '{}');
     const finalOptIdx = optIdx !== null ? optIdx : planData.optIdx;
 
     const body = isDemo 
-      ? { demo: true, guest_name: data.name, guest_email: data.email, guest_contact: data.contact }
-      : { plan_id: plan.id, option_index: finalOptIdx, guest_name: data.name, guest_email: data.email, guest_contact: data.contact };
+      ? { demo: true, guest_name: data.name, guest_email: data.email, guest_contact: data.contact, recaptcha_token: recaptchaToken }
+      : { plan_id: plan.id, option_index: finalOptIdx, guest_name: data.name, guest_email: data.email, guest_contact: data.contact, recaptcha_token: recaptchaToken };
     
     await api.post('/requests', body);
     

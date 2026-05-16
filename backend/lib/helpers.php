@@ -118,3 +118,33 @@ function tl_license_key(): string {
 function tl_api_key(): string {
     return 'tl_live_' . bin2hex(random_bytes(12));
 }
+
+function tl_verify_recaptcha(?string $token): void {
+    $secret = tl_env('RECAPTCHA_SECRET_KEY');
+    if (!$secret) return; // Skip if no secret key is set (development mode)
+    
+    if (!$token) tl_error('reCAPTCHA verification required', 422);
+
+    $url = 'https://www.google.com/recaptcha/api/siteverify';
+    $data = [
+        'secret' => $secret,
+        'response' => $token,
+        'remoteip' => $_SERVER['REMOTE_ADDR'] ?? null
+    ];
+
+    $options = [
+        'http' => [
+            'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+            'method'  => 'POST',
+            'content' => http_build_query($data)
+        ]
+    ];
+    $context  = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    if ($result === false) tl_error('reCAPTCHA service unavailable', 503);
+
+    $response = json_decode($result, true);
+    if (!$response['success']) {
+        tl_error('reCAPTCHA verification failed', 422);
+    }
+}

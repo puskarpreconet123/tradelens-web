@@ -59,6 +59,10 @@ try {
         tl_json_response(['service' => 'EduFlash PHP API', 'status' => 'ok']);
     }
 
+    if ($path === '/config' && $method === 'GET') {
+        tl_json_response(['recaptcha_site_key' => tl_env('RECAPTCHA_SITE_KEY')]);
+    }
+
     // ---------- Auth ----------
     if ($path === '/auth/register' && $method === 'POST') return handle_register();
     if ($path === '/auth/login'    && $method === 'POST') return handle_login(false);
@@ -103,6 +107,7 @@ try {
 
 function handle_register(): void {
     $b = tl_read_json();
+    tl_verify_recaptcha($b['recaptcha_token'] ?? null);
     $email = strtolower(trim($b['email'] ?? ''));
     $password = $b['password'] ?? '';
     $name = trim($b['name'] ?? '');
@@ -138,6 +143,7 @@ function handle_register(): void {
 
 function handle_login(bool $adminOnly): void {
     $b = tl_read_json();
+    tl_verify_recaptcha($b['recaptcha_token'] ?? null);
     $email = strtolower(trim($b['email'] ?? ''));
     $password = $b['password'] ?? '';
     if ($email === '' || $password === '') tl_error('Email and password are required', 422);
@@ -180,6 +186,7 @@ function handle_demo_plan(): void {
 function handle_create_request(): void {
     $u = tl_current_user(); // Optional auth
     $b = tl_read_json();
+    if (!$u) tl_verify_recaptcha($b['recaptcha_token'] ?? null);
     $isDemo = (bool)($b['demo'] ?? false);
     $db = tl_db();
 

@@ -1,7 +1,7 @@
 // Admin login page
 import { el, clear, toast } from '../../lib/ui.js';
 import { icons } from '../../lib/icons.js';
-import { api, errorMessage } from '../../lib/api.js';
+import { api, errorMessage, getConfig } from '../../lib/api.js';
 import { setToken, setUser, isAuthed, isAdmin } from '../../lib/auth.js';
 
 export async function renderAdminLogin(root) {
@@ -18,10 +18,15 @@ export async function renderAdminLogin(root) {
   card.addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(card));
+    const recaptchaToken = window.grecaptcha ? grecaptcha.getResponse() : null;
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<span class="spinner"></span> Authenticating\u2026';
     try {
-      const res = await api.post('/admin/login', { email: data.email, password: data.password });
+      const res = await api.post('/admin/login', { 
+        email: data.email, 
+        password: data.password,
+        recaptcha_token: recaptchaToken
+      });
       setToken(res.token); setUser(res.user);
       toast({ title: 'Admin sign-in successful', description: 'Loading admin console\u2026', kind: 'success' });
       setTimeout(() => { window.location.hash = '#/dashboard'; }, 500);
@@ -43,6 +48,19 @@ export async function renderAdminLogin(root) {
     el('label', { for: 'password' }, 'Password'),
     el('input', { id: 'password', name: 'password', type: 'password', required: true, minlength: 6, autocomplete: 'current-password' }),
   ));
+
+  const recaptchaEl = el('div', { class: 'g-recaptcha-wrap', style: { marginBottom: '16px', minHeight: '78px' } });
+  card.appendChild(recaptchaEl);
+
+  setTimeout(async () => {
+    if (window.grecaptcha) {
+      const config = await getConfig();
+      if (config.recaptcha_site_key) {
+        grecaptcha.render(recaptchaEl, { sitekey: config.recaptcha_site_key });
+      }
+    }
+  }, 100);
+
   const submitBtn = el('button', { type: 'submit', class: 'btn primary full', style: { marginTop: '8px' }, html: `Sign in ${icons.arrowRight('sm')}` });
   card.appendChild(submitBtn);
   card.appendChild(el('div', { class: 'auth-alt', html: `Need user access instead? <a href="/">Back to main site</a>` }));

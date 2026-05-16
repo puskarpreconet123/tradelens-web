@@ -1,7 +1,7 @@
 // /js/views/main/auth.js — Login & Register pages
 import { el, clear, toast } from '../../lib/ui.js';
 import { icons } from '../../lib/icons.js';
-import { api, errorMessage } from '../../lib/api.js';
+import { api, errorMessage, getConfig } from '../../lib/api.js';
 import { setToken, setUser, isAuthed } from '../../lib/auth.js';
 
 export async function renderAuth(root, mode = 'login') {
@@ -22,17 +22,20 @@ export async function renderAuth(root, mode = 'login') {
   card.addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(card));
+    const recaptchaToken = window.grecaptcha ? grecaptcha.getResponse() : null;
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<span class="spinner"></span> Please wait\u2026';
     try {
-      const res = isLogin
-        ? await api.post('/auth/login', { email: data.email, password: data.password })
-        : await api.post('/auth/register', { 
+      const payload = isLogin
+        ? { email: data.email, password: data.password, recaptcha_token: recaptchaToken }
+        : { 
             email: data.email, 
             password: data.password, 
             name: data.name,
-            contact_number: `${data.cc} ${data.contact_number}`
-          });
+            contact_number: `${data.cc} ${data.contact_number}`,
+            recaptcha_token: recaptchaToken
+          };
+      const res = await api.post(isLogin ? '/auth/login' : '/auth/register', payload);
       setToken(res.token);
       setUser(res.user);
       toast({ title: isLogin ? 'Welcome back' : 'Account created', description: 'Redirecting to your dashboard\u2026', kind: 'success' });
@@ -78,6 +81,20 @@ export async function renderAuth(root, mode = 'login') {
     el('label', { for: 'password' }, 'Password'),
     el('input', { id: 'password', name: 'password', type: 'password', required: true, minlength: 6, autocomplete: isLogin ? 'current-password' : 'new-password' }),
   ));
+
+  const recaptchaEl = el('div', { class: 'g-recaptcha-wrap', style: { marginBottom: '16px', minHeight: '78px' } });
+  card.appendChild(recaptchaEl);
+  
+  // Render reCAPTCHA if script is loaded
+  setTimeout(async () => {
+    if (window.grecaptcha) {
+      const config = await getConfig();
+      if (config.recaptcha_site_key) {
+        grecaptcha.render(recaptchaEl, { sitekey: config.recaptcha_site_key });
+      }
+    }
+  }, 100);
+
   const submitBtn = el('button', { type: 'submit', class: 'btn primary full', style: { marginTop: '8px' }, html: isLogin ? `Sign in ${icons.arrowRight('sm')}` : `Create account ${icons.arrowRight('sm')}` });
   card.appendChild(submitBtn);
 

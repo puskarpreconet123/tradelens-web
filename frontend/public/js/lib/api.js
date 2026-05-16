@@ -35,6 +35,18 @@ export const api = {
   del:  (p)         => request(p, { method: 'DELETE' }),
 };
 
+let _cachedConfig = null;
+export async function getConfig() {
+  if (_cachedConfig) return _cachedConfig;
+  try {
+    _cachedConfig = await api.get('/config');
+    return _cachedConfig;
+  } catch (e) {
+    console.error('Failed to load config:', e);
+    return {};
+  }
+}
+
 export function errorMessage(err, fallback = 'Something went wrong.') {
   const d = err?.data?.detail;
   if (Array.isArray(d)) return d.map(e => e.msg || e.message || JSON.stringify(e)).join(', ');
