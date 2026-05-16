@@ -1,5 +1,5 @@
 // /js/views/main/landing.js — Landing page renderer
-import { el, clear, toast } from '../../lib/ui.js';
+import { el, clear, toast, openModal, $ } from '../../lib/ui.js';
 import { icons } from '../../lib/icons.js';
 import { api } from '../../lib/api.js';
 import { isAuthed, getUser } from '../../lib/auth.js';
