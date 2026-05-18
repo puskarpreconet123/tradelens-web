@@ -5,6 +5,7 @@ function make(svgInner, size = 'icon') {
 
 export const icons = {
   activity:      make('<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>'),
+  arrowLeft:     make('<path d="M19 12H5"/><path d="m12 19-7-7 7-7"/>'),
   arrowRight:    make('<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>'),
   check:         make('<path d="M20 6 9 17l-5-5"/>'),
   chevronDown:   make('<path d="m6 9 6 6 6-6"/>'),
