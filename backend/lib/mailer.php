@@ -30,8 +30,16 @@ function tl_send_mail(string $to, string $subject, string $bodyHtml, string $bod
     $mail->SMTPAuth   = true;
     $mail->Username   = tl_env('SMTP_USER', '');
     $mail->Password   = tl_env('SMTP_PASS', '');
-    $mail->SMTPSecure = tl_env('SMTP_SECURE', PHPMailer::ENCRYPTION_STARTTLS);
+    $mail->SMTPSecure = tl_env('SMTP_SECURE', 'tls');
     $mail->Port       = (int)tl_env('SMTP_PORT', '587');
+
+    $mail->SMTPOptions = [
+        'ssl' => [
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true
+        ]
+    ];
 
     $mail->setFrom(tl_env('SMTP_FROM', $mail->Username), tl_env('SMTP_FROM_NAME', 'EduFlash'));
     $mail->addAddress($to);
