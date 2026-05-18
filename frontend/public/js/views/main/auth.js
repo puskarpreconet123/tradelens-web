@@ -67,7 +67,7 @@ export async function renderAuth(root, mode = 'login') {
         el('input', { id: 'cc', name: 'cc', type: 'text', placeholder: '+1', required: true }),
       ),
       el('div', { class: 'field', style: { flex: 1 } },
-        el('label', { for: 'contact_number' }, 'WhatsApp or Telegram No'),
+        el('label', { for: 'contact_number' }, 'WhatsApp/Telegram No'),
         el('input', { id: 'contact_number', name: 'contact_number', type: 'text', placeholder: '1234567890', required: true }),
       )
     ));

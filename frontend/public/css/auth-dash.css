@@ -10,11 +10,12 @@
 
 /* Dashboard */
 .dash-app { min-height: 100vh; background: var(--bg); position: relative; overflow: hidden; }
-.dash-header { position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: rgba(6,8,11,0.85); border-bottom: 1px solid var(--border); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); flex-wrap: wrap; gap: 10px; }
+.dash-header { position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: rgba(6,8,11,0.85); border-bottom: 1px solid var(--border); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); gap: 10px; }
 @media (min-width: 640px) { .dash-header { padding: 16px 28px; } }
-.dash-user { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.dash-user .name { font-size: 14px; color: var(--text); font-weight: 500; }
-.dash-user .email { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+.dash-user { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+@media (min-width: 1024px) { .dash-user { flex-direction: row; align-items: center; gap: 12px; } }
+.dash-user .name { font-size: 14px; color: var(--text); font-weight: 500; line-height: 1.2; }
+.dash-user .email { font-size: 11.5px; color: var(--muted); font-family: 'JetBrains Mono', monospace; line-height: 1.2; }
 .dash-main { max-width: 1180px; margin: 0 auto; padding: 28px 18px 60px; position: relative; z-index: 1; }
 @media (min-width: 640px) { .dash-main { padding: 36px 28px 80px; } }
 .dash-hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(26px, 5vw, 36px); font-weight: 600; color: var(--text-strong); letter-spacing: -0.025em; margin: 14px 0 8px; }

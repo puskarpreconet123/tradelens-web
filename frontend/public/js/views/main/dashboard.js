@@ -17,10 +17,12 @@ export async function renderDashboard(root) {
     el('div', { class: 'logo', html: icons.activity('sm') }),
     el('span', { class: 'brand-text' }, 'EduFlash'),
   ));
-  header.appendChild(el('div', { class: 'dash-user' },
-    el('span', { class: 'name' }, user.name),
-    el('span', { class: 'email hide-sm' }, user.email),
-    el('button', { class: 'btn ghost sm', onClick: () => { clearAuth(); window.location.hash = '#/'; }, html: `${icons.logOut('sm')} Sign out` }),
+  header.appendChild(el('div', { class: 'row gap-12' },
+    el('div', { class: 'dash-user' },
+      el('span', { class: 'name' }, user.name),
+      el('span', { class: 'email hide-sm' }, user.email),
+    ),
+    el('button', { class: 'btn ghost sm', onClick: () => { clearAuth(); window.location.hash = '#/'; }, html: `${icons.logOut('sm')} <span class="hide-sm" style="margin-left: 6px;">Sign out</span>` }),
   ));
   app.appendChild(header);
 

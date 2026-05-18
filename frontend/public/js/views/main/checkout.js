@@ -66,7 +66,7 @@ function renderContactStep(plan, opt, isDemo, onNext) {
           el('input', { id: 'checkout_cc', type: 'text', placeholder: '+1', required: true })
         ),
         el('div', { class: 'field', style: { flex: 1 } },
-          el('label', { for: 'checkout_contact', style: { fontSize: '13px', marginBottom: '6px', display: 'block' } }, 'WhatsApp or Telegram Number'),
+          el('label', { for: 'checkout_contact', style: { fontSize: '13px', marginBottom: '6px', display: 'block' } }, 'WhatsApp/Telegram No.'),
           el('input', { id: 'checkout_contact', type: 'text', placeholder: '1234567890', required: true })
         )
       ),
