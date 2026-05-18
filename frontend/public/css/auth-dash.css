@@ -13,6 +13,8 @@
 .dash-header { position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: rgba(6,8,11,0.85); border-bottom: 1px solid var(--border); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); gap: 10px; }
 @media (min-width: 640px) { .dash-header { padding: 16px 28px; } }
 .dash-user { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.dash-user.hide-sm { display: none; }
+@media (min-width: 768px) { .dash-user.hide-sm { display: flex; } }
 @media (min-width: 1024px) { .dash-user { flex-direction: row; align-items: center; gap: 12px; } }
 .dash-user .name { font-size: 14px; color: var(--text); font-weight: 500; line-height: 1.2; }
 .dash-user .email { font-size: 11.5px; color: var(--muted); font-family: 'JetBrains Mono', monospace; line-height: 1.2; }

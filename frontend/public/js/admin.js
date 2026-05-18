@@ -5,15 +5,14 @@ import { renderAdminDashboard } from './views/admin/dashboard.js';
 import { isAuthed, isAdmin } from './lib/auth.js';
 
 const routes = [
-  { path: /^\/$/,           view: (r) => { if (isAuthed() && isAdmin()) { window.location.hash = '#/dashboard'; } else { window.location.hash = '#/login'; } } },
-  { path: /^\/login$/,      view: renderAdminLogin },
+  { path: /^\/$/,           view: (r) => { if (isAuthed() && isAdmin()) { window.location.hash = '#/dashboard'; } else { window.location.href = '/#/login'; } } },
   { path: /^\/dashboard$/,  view: renderAdminDashboard },
 ];
 
 const router = new Router('app', routes, {
   beforeEach: (path) => {
-    if (path === '/dashboard' && (!isAuthed() || !isAdmin())) {
-      window.location.hash = '#/login';
+    if ((path === '/dashboard' || path === '/') && (!isAuthed() || !isAdmin())) {
+      window.location.href = '/#/login';
       return false;
     }
     return true;

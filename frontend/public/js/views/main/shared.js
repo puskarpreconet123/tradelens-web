@@ -23,7 +23,7 @@ export function renderNavbar() {
     el('img', { src: '/eduflash_badge.svg', style: { width: '32px', height: '32px', display: 'block' } }),
     el('div', { class: 'brand-info' },
       el('span', { class: 'brand-text' }, 'EduFlash'),
-      el('span', { class: 'brand-tagline' }, 'Blockchain Research Education & Laboratory'),
+      el('span', { class: 'brand-tagline hide-sm' }, 'Blockchain Research Education & Laboratory'),
     ),
   ));
   inner.appendChild(el('nav', { class: 'nav-links' },

@@ -10,8 +10,10 @@ export async function renderAdminLogin(root) {
 
   const page = el('div', { class: 'auth-page' });
   page.appendChild(el('a', { class: 'brand auth-brand', href: '/' },
-    el('div', { class: 'logo', html: icons.activity('sm') }),
-    el('span', { class: 'brand-text' }, 'EduFlash'),
+    el('img', { src: '/eduflash_badge.svg', style: { width: '32px', height: '32px', display: 'block' } }),
+    el('div', { class: 'brand-info' },
+      el('span', { class: 'brand-text' }, 'EduFlash \u2014 Admin'),
+    )
   ));
 
   const card = el('form', { class: 'tl-card auth-card' });

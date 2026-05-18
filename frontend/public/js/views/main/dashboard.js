@@ -14,7 +14,7 @@ export async function renderDashboard(root) {
   // Header
   const header = el('header', { class: 'dash-header' });
   header.appendChild(el('a', { class: 'brand', href: '#/' },
-    el('div', { class: 'logo', html: icons.activity('sm') }),
+    el('img', { src: '/eduflash_badge.svg', style: { width: '30px', height: '30px', display: 'block' } }),
     el('span', { class: 'brand-text' }, 'EduFlash'),
   ));
   header.appendChild(el('div', { class: 'row gap-12' },

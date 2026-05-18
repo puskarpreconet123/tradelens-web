@@ -17,7 +17,7 @@ export async function renderAdminDashboard(root) {
   
   inner.appendChild(el('div', { class: 'row gap-12' },
     el('a', { class: 'brand', href: '/' },
-      el('div', { class: 'logo', html: icons.activity('sm') }),
+      el('img', { src: '/eduflash_badge.svg', style: { width: '30px', height: '30px', display: 'block' } }),
       el('span', { class: 'brand-text' }, 'EduFlash'),
     ),
     el('span', { class: 'admin-badge' }, 'Admin Console'),
@@ -28,7 +28,7 @@ export async function renderAdminDashboard(root) {
     el('span', { class: 'name' }, user?.name || 'Admin'),
     el('span', { class: 'email' }, user?.email || ''),
   ));
-  right.appendChild(el('button', { class: 'btn ghost sm hide-sm', onClick: () => { clearAuth(); window.location.hash = '#/login'; }, html: `${icons.logOut('sm')} Sign out` }));
+  right.appendChild(el('button', { class: 'btn ghost sm hide-sm', onClick: () => { clearAuth(); window.location.href = '/#/login'; }, html: `${icons.logOut('sm')} Sign out` }));
   
   const menuBtn = el('button', { class: 'icon-btn menu-btn show-sm', 'aria-label': 'menu', html: icons.menu('sm') });
   right.appendChild(menuBtn);
@@ -42,7 +42,7 @@ export async function renderAdminDashboard(root) {
     el('div', { class: 'name' }, user?.name || 'Admin'),
     el('div', { class: 'email' }, user?.email || ''),
   ));
-  mobContent.appendChild(el('button', { class: 'btn ghost full', style: { marginTop: '12px' }, onClick: () => { clearAuth(); window.location.hash = '#/login'; }, html: `${icons.logOut('sm')} Sign out` }));
+  mobContent.appendChild(el('button', { class: 'btn ghost full', style: { marginTop: '12px' }, onClick: () => { clearAuth(); window.location.href = '/#/login'; }, html: `${icons.logOut('sm')} Sign out` }));
   mobile.appendChild(mobContent);
   header.appendChild(mobile);
 
