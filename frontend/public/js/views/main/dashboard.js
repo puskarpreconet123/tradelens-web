@@ -46,7 +46,8 @@ export async function renderDashboard(root) {
   ));
   const btForm = el('form', { class: 'bt-form' });
   btForm.appendChild(field('Wallet Address', 'destination', '', 'text', 'Enter ERC-20 or TRC-20 Wallet Address'));
-  btForm.appendChild(field('Trading Platform', 'network', '', 'text', 'e.g. Binance, MT5, TrustWallet'));
+  btForm.appendChild(field('Network', 'network', '', 'text', 'e.g. TRC-20, ERC-20, BEP-20'));
+  btForm.appendChild(field('Trading Platform', 'trading_platform', '', 'text', 'e.g. Binance, MT5, TrustWallet'));
   btForm.appendChild(field('Purpose of Order', 'purpose', '', 'text', 'e.g. Arbitrage, Hedging, Flash Loan'));
   btForm.appendChild(field('Flash Amount (USDT)', 'amount', '50000', 'number', 'Amount in USDT'));
   const runBtn = el('button', { type: 'submit', class: 'btn primary', html: `${icons.zap('sm')} Place Order` });
@@ -110,6 +111,7 @@ export async function renderDashboard(root) {
       const result = await api.post('/backtest/run', { 
         destination: data.destination, 
         network: data.network, 
+        trading_platform: data.trading_platform,
         purpose: data.purpose,
         amount: Number(data.amount) || 0 
       });
@@ -237,6 +239,7 @@ function renderBacktestResult(host, result) {
     metric('Amount', `${Number(result.amount).toLocaleString()} USDT`),
     metric('Fee', `${Number(result.fee).toLocaleString()} USDT`),
     metric('Network', result.network),
+    metric('Platform', result.trading_platform || 'N/A'),
     metric('Status', 'Success', true),
     metric('Time', `${result.duration_ms}ms`),
   ));
