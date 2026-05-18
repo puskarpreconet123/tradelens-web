@@ -350,11 +350,17 @@ function handle_list_my_requests(): void {
 
 function handle_list_licenses(): void {
     $u = tl_require_auth();
-    $cursor = tl_db()->licenses->find(['user_id' => $u['id']], ['sort' => ['issued_at' => -1]]);
+    $db = tl_db();
+    $cursor = $db->licenses->find(['user_id' => $u['id']], ['sort' => ['issued_at' => -1]]);
     $out = [];
+    $now = date('c');
     foreach ($cursor as $r) {
         $item = (array)$r;
         unset($item['_id']);
+        if ($item['status'] === 'active' && isset($item['expires_at']) && $item['expires_at'] < $now) {
+            $item['status'] = 'expired';
+            $db->licenses->updateOne(['id' => $item['id']], ['$set' => ['status' => 'expired']]);
+        }
         $out[] = $item;
     }
     tl_json_response($out);

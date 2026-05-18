@@ -219,12 +219,16 @@ function renderLicensesTable(body, lics) {
   lics.forEach(l => {
     const tr = el('tr');
     const used = Number(l.backtests_used), limit = Number(l.backtests_limit);
+    let status = l.status;
+    if (status === 'active' && l.expires_at && new Date(l.expires_at) < new Date()) {
+      status = 'expired';
+    }
     tr.appendChild(el('td', {}, fmtDateOnly(l.issued_at)));
     tr.appendChild(el('td', {}, `${l.plan_name} \u00b7 ${l.period}`));
     tr.appendChild(el('td', { html: `<code>${l.license_key}</code>` }));
     tr.appendChild(el('td', {}, `${used.toLocaleString()} / ${limit >= 999999 ? '\u221e' : limit.toLocaleString()} USDT`));
     tr.appendChild(el('td', {}, fmtDateOnly(l.expires_at)));
-    tr.appendChild(el('td', { html: `<span class="pill ${l.status}">${l.status}</span>` }));
+    tr.appendChild(el('td', { html: `<span class="pill ${status}">${status}</span>` }));
     tbody.appendChild(tr);
   });
   table.appendChild(tbody);
