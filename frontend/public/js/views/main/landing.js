@@ -66,7 +66,7 @@ export async function renderLanding(root) {
       el('p', { class: 'sub' }, 'Enterprise-grade software for USDT flash transfers with AES-256 security, real-time monitoring, and a 99.9% success rate across multiple blockchain networks.'),
       el('div', { class: 'hero-cta' },
         el('a', { class: 'btn primary lg', href: '#pricing', html: `Get Started ${icons.arrowRight('sm')}` }),
-        el('a', { class: 'btn ghost lg', href: '#preview' }, 'View Platform'),
+        el('a', { class: 'btn ghost lg', href: '#/platform' }, 'View Platform'),
       ),
       el('div', { class: 'hero-stats' },
         ...HERO_STATS.map(s => el('div', { class: 'hero-stat' },

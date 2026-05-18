@@ -236,3 +236,34 @@ svg.icon.lg { width: 22px; height: 22px; }
 .summary-total { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-strong); display: flex; justify-content: space-between; align-items: baseline; }
 .summary-total .label { font-weight: 600; color: var(--text-strong); }
 .summary-total .val { font-size: 22px; font-weight: 700; color: var(--cyan); }
+
+/* reCAPTCHA wrapper & loader */
+.g-recaptcha-wrap {
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  min-height: 78px;
+}
+.g-recaptcha-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  z-index: 1;
+}
+.g-recaptcha-wrap > div:not(.g-recaptcha-loading) {
+  position: relative;
+  z-index: 2;
+}
+@media (max-width: 480px) {
+  .g-recaptcha-wrap {
+    transform: scale(0.85);
+    transform-origin: center center;
+  }
+}

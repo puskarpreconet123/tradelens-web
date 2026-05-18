@@ -83,6 +83,10 @@ export async function renderAuth(root, mode = 'login') {
   ));
 
   const recaptchaEl = el('div', { class: 'g-recaptcha-wrap', style: { marginBottom: '16px', minHeight: '78px' } });
+  const loadingEl = el('div', { class: 'g-recaptcha-loading' }, 
+    el('span', { class: 'spinner' }), 'Loading captcha...'
+  );
+  recaptchaEl.appendChild(loadingEl);
   card.appendChild(recaptchaEl);
   
   // Render reCAPTCHA if script is loaded
@@ -90,7 +94,10 @@ export async function renderAuth(root, mode = 'login') {
     if (window.grecaptcha) {
       const config = await getConfig();
       if (config.recaptcha_site_key) {
-        grecaptcha.render(recaptchaEl, { sitekey: config.recaptcha_site_key });
+        const target = el('div');
+        recaptchaEl.appendChild(target);
+        grecaptcha.render(target, { sitekey: config.recaptcha_site_key });
+        loadingEl.style.display = 'none';
       }
     }
   }, 100);

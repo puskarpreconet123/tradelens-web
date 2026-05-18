@@ -66,8 +66,8 @@ function renderContactStep(plan, opt, isDemo, onNext) {
           el('input', { id: 'checkout_cc', type: 'text', placeholder: '+1', required: true })
         ),
         el('div', { class: 'field', style: { flex: 1 } },
-          el('label', { for: 'checkout_contact', style: { fontSize: '13px', marginBottom: '6px', display: 'block' } }, 'WhatsApp or Telegram'),
-          el('input', { id: 'checkout_contact', type: 'text', placeholder: '1234567890 or @username', required: true })
+          el('label', { for: 'checkout_contact', style: { fontSize: '13px', marginBottom: '6px', display: 'block' } }, 'WhatsApp or Telegram Number'),
+          el('input', { id: 'checkout_contact', type: 'text', placeholder: '1234567890', required: true })
         )
       ),
       
@@ -104,11 +104,8 @@ function renderPaymentStage(plan, opt, isDemo, contactData) {
   steps[1].classList.add('active');
 
   const mainContent = $('#checkout-main-content');
-  clear(mainContent);
-
-  const price = opt.price_usd ?? opt.price ?? 0;
-
-  mainContent.appendChild(el('div', { class: 'tl-card checkout-card', style: { display: 'grid', gap: '24px' } },
+  clear(mainContent);  const price = opt.price_usd ?? opt.price ?? 0;
+  const card = el('div', { class: 'tl-card checkout-card', style: { display: 'grid', gap: '24px' } },
     el('div', { class: 'row gap-12' },
       el('div', { class: 'center', style: { width: '40px', height: '40px', background: 'rgba(94, 234, 212, 0.1)', borderRadius: '10px', color: 'var(--cyan)' }, html: icons.receipt() }),
       el('div', {},
@@ -136,7 +133,11 @@ function renderPaymentStage(plan, opt, isDemo, contactData) {
       el('p', { style: { fontSize: '12px', color: 'var(--muted)', margin: 0, lineHeight: 1.5 } }, 'To ensure the security of our network, all new licenses are manually reviewed. Click below to submit your request.')
     ),
 
-    el('div', { id: 'checkout-recaptcha', style: { marginBottom: '8px', minHeight: '78px' } }),
+    el('div', { id: 'checkout-recaptcha', class: 'g-recaptcha-wrap', style: { marginBottom: '8px', minHeight: '78px' } },
+      el('div', { class: 'g-recaptcha-loading' }, 
+        el('span', { class: 'spinner' }), 'Loading captcha...'
+      )
+    ),
 
     el('button', {
       class: 'btn primary full lg',
@@ -152,7 +153,8 @@ function renderPaymentStage(plan, opt, isDemo, contactData) {
         }
       }
     }, 'Complete Request')
-  ));
+  );
+  
   mainContent.appendChild(card);
 
   // Render reCAPTCHA
@@ -161,7 +163,11 @@ function renderPaymentStage(plan, opt, isDemo, contactData) {
     if (el && window.grecaptcha) {
       const config = await getConfig();
       if (config.recaptcha_site_key) {
-        grecaptcha.render(el, { sitekey: config.recaptcha_site_key });
+        const target = document.createElement('div');
+        el.appendChild(target);
+        grecaptcha.render(target, { sitekey: config.recaptcha_site_key });
+        const loading = el.querySelector('.g-recaptcha-loading');
+        if (loading) loading.style.display = 'none';
       }
     }
   }, 100);
