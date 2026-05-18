@@ -1,11 +1,10 @@
 // /js/admin.js — Admin app entry
 import { Router } from './lib/router.js';
-import { renderAdminLogin } from './views/admin/login.js';
 import { renderAdminDashboard } from './views/admin/dashboard.js';
 import { isAuthed, isAdmin } from './lib/auth.js';
 
 const routes = [
-  { path: /^\/$/,           view: (r) => { if (isAuthed() && isAdmin()) { window.location.hash = '#/dashboard'; } else { window.location.href = '/#/login'; } } },
+  { path: /^\/$/,           view: () => { if (isAuthed() && isAdmin()) { window.location.hash = '#/dashboard'; } else { window.location.href = '/#/login'; } } },
   { path: /^\/dashboard$/,  view: renderAdminDashboard },
 ];
 
