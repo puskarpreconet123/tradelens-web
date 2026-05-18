@@ -44,13 +44,13 @@
 .panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; justify-content: space-between; }
 .panel-head h2 { font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 600; color: var(--text-strong); margin: 0; }
 
-.bt-form { display: grid; grid-template-columns: 1fr; gap: 12px; align-items: end; }
+.bt-form { display: grid; grid-template-columns: 1fr; gap: 14px; align-items: flex-end; }
 @media (min-width: 640px) { .bt-form { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1024px) { .bt-form { grid-template-columns: repeat(3, 1fr) auto; } }
+@media (min-width: 1024px) { .bt-form { grid-template-columns: repeat(4, 1fr) auto; } }
 
 .bt-result { margin-top: 22px; padding: 16px; background: rgba(8,12,16,0.5); border: 1px solid var(--border); border-radius: 12px; }
 .bt-metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
-@media (min-width: 640px) { .bt-metrics { grid-template-columns: repeat(5, 1fr); } }
+@media (min-width: 480px) { .bt-metrics { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); } }
 .bt-metric { padding: 12px 10px; background: rgba(6,8,11,0.7); border-radius: 9px; border: 1px solid rgba(94,234,212,0.1); text-align: center; }
 .bt-metric .lab { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.14em; }
 .bt-metric .val { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 600; margin-top: 4px; color: var(--text-strong); }

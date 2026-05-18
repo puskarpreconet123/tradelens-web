@@ -428,6 +428,7 @@ function handle_run_backtest(): void {
         'amount' => $amount,
         'network' => $network,
         'destination' => $destination,
+        'purpose' => trim((string)($b['purpose'] ?? '')),
         'run_id' => $run_id,
         'duration_ms' => $duration_ms,
         'equity_curve' => $curve,

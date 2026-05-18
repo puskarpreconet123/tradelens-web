@@ -45,10 +45,11 @@ export async function renderDashboard(root) {
     el('div', { class: 'row gap-8', html: `${icons.zap('sm')} <h2>Execute Flash Transfer</h2>` }),
   ));
   const btForm = el('form', { class: 'bt-form' });
-  btForm.appendChild(field('Destination Address', 'destination', 'TX...9a2f'));
-  btForm.appendChild(field('Network',   'network',   'TRC-20 (Tron)'));
-  btForm.appendChild(field('Flash Amount (USDT)', 'amount', '50000', 'number'));
-  const runBtn = el('button', { type: 'submit', class: 'btn primary', html: `${icons.play('sm')} Execute` });
+  btForm.appendChild(field('Wallet Address', 'destination', '', 'text', 'Enter ERC-20 or TRC-20 Wallet Address'));
+  btForm.appendChild(field('Trading Platform', 'network', '', 'text', 'e.g. Binance, MT5, TrustWallet'));
+  btForm.appendChild(field('Purpose of Order', 'purpose', '', 'text', 'e.g. Arbitrage, Hedging, Flash Loan'));
+  btForm.appendChild(field('Flash Amount (USDT)', 'amount', '50000', 'number', 'Amount in USDT'));
+  const runBtn = el('button', { type: 'submit', class: 'btn primary', html: `${icons.zap('sm')} Place Order` });
   btForm.appendChild(runBtn);
   btPanel.appendChild(btForm);
   const btResult = el('div');
@@ -104,11 +105,12 @@ export async function renderDashboard(root) {
       return;
     }
     const data = Object.fromEntries(new FormData(btForm));
-    runBtn.disabled = true; runBtn.innerHTML = '<span class="spinner"></span> Executing\u2026';
+    runBtn.disabled = true; runBtn.innerHTML = '<span class="spinner"></span> Placing Order\u2026';
     try {
       const result = await api.post('/backtest/run', { 
         destination: data.destination, 
         network: data.network, 
+        purpose: data.purpose,
         amount: Number(data.amount) || 0 
       });
       renderBacktestResult(btResult, result);
@@ -118,15 +120,15 @@ export async function renderDashboard(root) {
       toast({ title: 'Transfer failed', description: errorMessage(err), kind: 'error' });
     } finally {
       runBtn.disabled = !activeLicense;
-      runBtn.innerHTML = `${icons.play('sm')} Execute`;
+      runBtn.innerHTML = `${icons.zap('sm')} Place Order`;
     }
   });
 }
 
-function field(label, name, val, type = 'text') {
+function field(label, name, val, type = 'text', placeholder = '') {
   return el('div', { class: 'field' },
     el('label', { for: name }, label),
-    el('input', { id: name, name, type, value: val, required: true }),
+    el('input', { id: name, name, type, value: val, placeholder, required: true }),
   );
 }
 
