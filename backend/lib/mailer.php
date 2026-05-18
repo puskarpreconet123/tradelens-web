@@ -26,7 +26,8 @@ function tl_send_mail(string $to, string $subject, string $bodyHtml, string $bod
 
     $mail->Timeout = 5; // 5 second timeout so it doesn't hang forever
     $mail->isSMTP();
-    $mail->Host       = tl_env('SMTP_HOST', 'smtp.gmail.com');
+    // Force IPv4 resolution to prevent IPv6 timeouts (common cause of error 110)
+    $mail->Host       = gethostbyname(tl_env('SMTP_HOST', 'smtp.gmail.com'));
     $mail->SMTPAuth   = true;
     $mail->Username   = tl_env('SMTP_USER', '');
     $mail->Password   = tl_env('SMTP_PASS', '');
