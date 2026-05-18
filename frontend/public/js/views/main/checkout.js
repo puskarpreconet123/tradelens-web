@@ -63,7 +63,11 @@ function renderContactStep(plan, opt, isDemo, onNext) {
       el('div', { class: 'row gap-12', style: { alignItems: 'flex-start' } },
         el('div', { class: 'field', style: { width: '100px' } },
           el('label', { for: 'checkout_cc', style: { fontSize: '13px', marginBottom: '6px', display: 'block' } }, 'Code'),
-          el('input', { id: 'checkout_cc', type: 'text', placeholder: '+1', required: true })
+          el('select', { id: 'checkout_cc', required: true },
+            ...['+1','+44','+91','+61','+81','+86','+49','+33','+39','+34','+55','+52','+27','+971','+966','+65','+60','+62','+92','+880','+234'].map(c => 
+              el('option', { value: c }, c)
+            )
+          )
         ),
         el('div', { class: 'field', style: { flex: 1 } },
           el('label', { for: 'checkout_contact', style: { fontSize: '13px', marginBottom: '6px', display: 'block' } }, 'WhatsApp/Telegram No.'),

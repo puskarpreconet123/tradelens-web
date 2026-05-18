@@ -64,7 +64,11 @@ export async function renderAuth(root, mode = 'login') {
     card.appendChild(el('div', { class: 'row gap-12', style: { alignItems: 'flex-start' } },
       el('div', { class: 'field', style: { width: '80px' } },
         el('label', { for: 'cc' }, 'Code'),
-        el('input', { id: 'cc', name: 'cc', type: 'text', placeholder: '+1', required: true }),
+        el('select', { id: 'cc', name: 'cc', required: true },
+          ...['+1','+44','+91','+61','+81','+86','+49','+33','+39','+34','+55','+52','+27','+971','+966','+65','+60','+62','+92','+880','+234'].map(c => 
+            el('option', { value: c }, c)
+          )
+        ),
       ),
       el('div', { class: 'field', style: { flex: 1 } },
         el('label', { for: 'contact_number' }, 'WhatsApp/Telegram No'),
