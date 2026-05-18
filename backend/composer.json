@@ -1,6 +1,7 @@
 {
     "require": {
-        "mongodb/mongodb": "^2.0"
+        "mongodb/mongodb": "^2.0",
+        "phpmailer/phpmailer": "^6.9"
     },
     "scripts": {
         "seed": "php lib/seed.php"

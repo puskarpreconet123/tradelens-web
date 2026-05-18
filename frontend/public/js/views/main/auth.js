@@ -77,10 +77,14 @@ export async function renderAuth(root, mode = 'login') {
     el('label', { for: 'email' }, 'Email'),
     el('input', { id: 'email', name: 'email', type: 'email', placeholder: 'you@example.com', required: true, autocomplete: 'email' }),
   ));
-  card.appendChild(el('div', { class: 'field' },
-    el('label', { for: 'password' }, 'Password'),
+  const pwdField = el('div', { class: 'field' },
+    el('div', { class: 'row' , style: { justifyContent: 'space-between', alignItems: 'center' } },
+      el('label', { for: 'password' }, 'Password'),
+      isLogin ? el('a', { href: '#/forgot-password', style: { fontSize: '11px', color: 'var(--cyan)' } }, 'Forgot Password?') : null
+    ),
     el('input', { id: 'password', name: 'password', type: 'password', placeholder: '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022', required: true, minlength: 6, autocomplete: isLogin ? 'current-password' : 'new-password' }),
-  ));
+  );
+  card.appendChild(pwdField);
 
   const recaptchaEl = el('div', { class: 'g-recaptcha-wrap', style: { marginBottom: '16px', minHeight: '78px' } });
   const loadingEl = el('div', { class: 'g-recaptcha-loading' }, 

@@ -19,6 +19,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'OPTIONS') {
 
 require_once __DIR__ . '/lib/helpers.php';
 require_once __DIR__ . '/lib/seed.php';
+require_once __DIR__ . '/lib/mailer.php';
 
 // Auto-seed if plans are missing
 try {
@@ -67,6 +68,8 @@ try {
     if ($path === '/auth/register' && $method === 'POST') return handle_register();
     if ($path === '/auth/login'    && $method === 'POST') return handle_login(false);
     if ($path === '/auth/me'       && $method === 'GET')  return handle_me();
+    if ($path === '/auth/forgot-password' && $method === 'POST') return handle_forgot_password();
+    if ($path === '/auth/reset-password'  && $method === 'POST') return handle_reset_password();
 
     // Admin auth
     if ($path === '/admin/login'   && $method === 'POST') return handle_login(true);
@@ -162,6 +165,72 @@ function handle_login(bool $adminOnly): void {
 function handle_me(): void {
     $u = tl_require_auth();
     tl_json_response($u);
+}
+
+function handle_forgot_password(): void {
+    $b = tl_read_json();
+    $email = strtolower(trim($b['email'] ?? ''));
+    if ($email === '') tl_error('Email is required', 422);
+
+    $db = tl_db();
+    $u = $db->users->findOne(['email' => $email]);
+    if (!$u) {
+        // Always return success to prevent email enumeration
+        tl_json_response(['success' => true]);
+        return;
+    }
+
+    $token = tl_uuid();
+    $expires = date('c', time() + 3600); // 1 hour
+
+    $db->users->updateOne(['email' => $email], [
+        '$set' => [
+            'reset_token' => $token,
+            'reset_expires' => $expires
+        ]
+    ]);
+
+    // Send email
+    $appUrl = tl_env('FRONTEND_URL', 'https://eduflash.app');
+    $resetLink = rtrim($appUrl, '/') . '/#/reset-password?token=' . urlencode($token);
+    
+    $subject = 'Password Reset - EduFlash';
+    $html = "<p>Hello,</p><p>You requested a password reset for your EduFlash account.</p>
+             <p>Click the link below to set a new password:</p>
+             <p><a href=\"{$resetLink}\">Reset Password</a></p>
+             <p>This link will expire in 1 hour.</p>
+             <p>If you did not request this, please ignore this email.</p>";
+             
+    tl_send_mail($email, $subject, $html);
+
+    tl_json_response(['success' => true]);
+}
+
+function handle_reset_password(): void {
+    $b = tl_read_json();
+    $token = trim($b['token'] ?? '');
+    $password = $b['password'] ?? '';
+
+    if ($token === '' || $password === '') tl_error('Token and new password required', 422);
+    if (strlen($password) < 6) tl_error('Password must be at least 6 characters', 422);
+
+    $db = tl_db();
+    $u = $db->users->findOne(['reset_token' => $token]);
+    
+    if (!$u) tl_error('Invalid or expired reset token', 400);
+
+    // Check expiration
+    if (isset($u['reset_expires']) && strtotime($u['reset_expires']) < time()) {
+        tl_error('Reset token has expired', 400);
+    }
+
+    // Update password
+    $db->users->updateOne(['id' => $u['id']], [
+        '$set' => ['password_hash' => tl_hash_password($password)],
+        '$unset' => ['reset_token' => '', 'reset_expires' => '']
+    ]);
+
+    tl_json_response(['success' => true]);
 }
 
 function handle_list_plans(): void {

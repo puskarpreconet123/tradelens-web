@@ -2,6 +2,8 @@
 import { Router } from './lib/router.js';
 import { renderLanding } from './views/main/landing.js';
 import { renderAuth } from './views/main/auth.js';
+import { renderForgotPassword } from './views/main/forgot_password.js';
+import { renderResetPassword } from './views/main/reset_password.js';
 import { renderDashboard } from './views/main/dashboard.js';
 import { renderCheckout } from './views/main/checkout.js';
 import { renderTerms, renderPrivacy } from './views/main/legal.js';
@@ -11,6 +13,8 @@ const routes = [
   { path: /^\/(platform|how-it-works|pricing|faq)?$/, view: renderLanding },
   { path: /^\/login$/,       view: (root) => renderAuth(root, 'login') },
   { path: /^\/register$/,    view: (root) => renderAuth(root, 'register') },
+  { path: /^\/forgot-password$/, view: renderForgotPassword },
+  { path: /^\/reset-password$/,  view: renderResetPassword },
   { path: /^\/dashboard$/,   view: renderDashboard },
   { path: /^\/checkout$/,    view: renderCheckout },
   { path: /^\/terms$/,       view: renderTerms },
