@@ -58,7 +58,7 @@ export async function renderAuth(root, mode = 'login') {
   if (!isLogin) {
     card.appendChild(el('div', { class: 'field' },
       el('label', { for: 'name' }, 'Full Name'),
-      el('input', { id: 'name', name: 'name', type: 'text', required: true, maxlength: 80, autocomplete: 'name' }),
+      el('input', { id: 'name', name: 'name', type: 'text', placeholder: 'John Doe', required: true, maxlength: 80, autocomplete: 'name' }),
     ));
     
     card.appendChild(el('div', { class: 'row gap-12', style: { alignItems: 'flex-start' } },
@@ -75,11 +75,11 @@ export async function renderAuth(root, mode = 'login') {
   }
   card.appendChild(el('div', { class: 'field' },
     el('label', { for: 'email' }, 'Email'),
-    el('input', { id: 'email', name: 'email', type: 'email', required: true, autocomplete: 'email' }),
+    el('input', { id: 'email', name: 'email', type: 'email', placeholder: 'you@example.com', required: true, autocomplete: 'email' }),
   ));
   card.appendChild(el('div', { class: 'field' },
     el('label', { for: 'password' }, 'Password'),
-    el('input', { id: 'password', name: 'password', type: 'password', required: true, minlength: 6, autocomplete: isLogin ? 'current-password' : 'new-password' }),
+    el('input', { id: 'password', name: 'password', type: 'password', placeholder: '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022', required: true, minlength: 6, autocomplete: isLogin ? 'current-password' : 'new-password' }),
   ));
 
   const recaptchaEl = el('div', { class: 'g-recaptcha-wrap', style: { marginBottom: '16px', minHeight: '78px' } });

@@ -42,11 +42,11 @@ export async function renderAdminLogin(root) {
   card.appendChild(el('p', { class: 'sub' }, 'Restricted area. Authorized personnel only.'));
   card.appendChild(el('div', { class: 'field' },
     el('label', { for: 'email' }, 'Admin Email'),
-    el('input', { id: 'email', name: 'email', type: 'email', required: true, autocomplete: 'email' }),
+    el('input', { id: 'email', name: 'email', type: 'email', placeholder: 'admin@example.com', required: true, autocomplete: 'email' }),
   ));
   card.appendChild(el('div', { class: 'field' },
     el('label', { for: 'password' }, 'Password'),
-    el('input', { id: 'password', name: 'password', type: 'password', required: true, minlength: 6, autocomplete: 'current-password' }),
+    el('input', { id: 'password', name: 'password', type: 'password', placeholder: '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022', required: true, minlength: 6, autocomplete: 'current-password' }),
   ));
 
   const recaptchaEl = el('div', { class: 'g-recaptcha-wrap', style: { marginBottom: '16px', minHeight: '78px' } });
