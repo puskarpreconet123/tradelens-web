@@ -201,9 +201,10 @@ function handle_forgot_password(): void {
              <p>This link will expire in 1 hour.</p>
              <p>If you did not request this, please ignore this email.</p>";
              
-    $sent = tl_send_mail($email, $subject, $html);
-    if (!$sent) {
-        tl_error('Failed to send password reset email. Please contact support or check SMTP configuration.', 500);
+    try {
+        tl_send_mail($email, $subject, $html);
+    } catch (Exception $e) {
+        tl_error($e->getMessage(), 500);
     }
 
     tl_json_response(['success' => true]);

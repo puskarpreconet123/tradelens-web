@@ -24,28 +24,27 @@ function tl_send_mail(string $to, string $subject, string $bodyHtml, string $bod
 
     $mail = new PHPMailer(true);
 
+    $mail->Timeout = 5; // 5 second timeout so it doesn't hang forever
+    $mail->isSMTP();
+    $mail->Host       = tl_env('SMTP_HOST', 'smtp.gmail.com');
+    $mail->SMTPAuth   = true;
+    $mail->Username   = tl_env('SMTP_USER', '');
+    $mail->Password   = tl_env('SMTP_PASS', '');
+    $mail->SMTPSecure = tl_env('SMTP_SECURE', PHPMailer::ENCRYPTION_STARTTLS);
+    $mail->Port       = (int)tl_env('SMTP_PORT', '587');
+
+    $mail->setFrom(tl_env('SMTP_FROM', $mail->Username), tl_env('SMTP_FROM_NAME', 'EduFlash'));
+    $mail->addAddress($to);
+
+    $mail->isHTML(true);
+    $mail->Subject = $subject;
+    $mail->Body    = $bodyHtml;
+    $mail->AltBody = $bodyText ?: strip_tags($bodyHtml);
+
     try {
-        $mail->Timeout = 5; // 5 second timeout so it doesn't hang forever
-        $mail->isSMTP();
-        $mail->Host       = tl_env('SMTP_HOST', 'smtp.gmail.com');
-        $mail->SMTPAuth   = true;
-        $mail->Username   = tl_env('SMTP_USER', '');
-        $mail->Password   = tl_env('SMTP_PASS', '');
-        $mail->SMTPSecure = tl_env('SMTP_SECURE', PHPMailer::ENCRYPTION_STARTTLS);
-        $mail->Port       = (int)tl_env('SMTP_PORT', '587');
-
-        $mail->setFrom(tl_env('SMTP_FROM', $mail->Username), tl_env('SMTP_FROM_NAME', 'EduFlash'));
-        $mail->addAddress($to);
-
-        $mail->isHTML(true);
-        $mail->Subject = $subject;
-        $mail->Body    = $bodyHtml;
-        $mail->AltBody = $bodyText ?: strip_tags($bodyHtml);
-
         $mail->send();
         return true;
     } catch (Exception $e) {
-        error_log("Mail sending failed: {$mail->ErrorInfo}");
-        return false;
+        throw new Exception("Mail Error: {$mail->ErrorInfo}");
     }
 }
