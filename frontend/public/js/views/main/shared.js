@@ -33,9 +33,9 @@ export function renderNavbar() {
   const right = el('div', { class: 'nav-right' });
   if (authed) {
     if (u?.role === 'admin') {
-      right.appendChild(el('a', { class: 'btn ghost sm', href: '/admin/', html: `${icons.crown('sm')} Admin Panel` }));
+      right.appendChild(el('a', { class: 'btn ghost sm hide-sm', href: '/admin/', html: `${icons.crown('sm')} Admin Panel` }));
     }
-    right.appendChild(el('a', { class: 'btn primary sm', href: '#/dashboard', html: `${icons.layout('sm')} Dashboard` }));
+    right.appendChild(el('a', { class: 'btn primary sm hide-sm', href: '#/dashboard', html: `${icons.layout('sm')} Dashboard` }));
   } else {
     right.appendChild(el('a', { class: 'btn ghost sm hide-sm', href: '#/login' }, 'Sign in'));
     right.appendChild(el('a', { class: 'btn primary sm nav-cta-desktop', href: '#pricing' }, 'Get Access'));
