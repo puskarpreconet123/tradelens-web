@@ -17,9 +17,15 @@ function tl_send_mail(string $to, string $subject, string $bodyHtml, string $bod
         require_once $vendorPath;
     }
 
+    if (!class_exists('PHPMailer\PHPMailer\PHPMailer')) {
+        error_log('PHPMailer class not found. Ensure composer dependencies are installed.');
+        return false;
+    }
+
     $mail = new PHPMailer(true);
 
     try {
+        $mail->Timeout = 5; // 5 second timeout so it doesn't hang forever
         $mail->isSMTP();
         $mail->Host       = tl_env('SMTP_HOST', 'smtp.gmail.com');
         $mail->SMTPAuth   = true;
